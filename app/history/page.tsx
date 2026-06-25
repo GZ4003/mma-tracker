@@ -14,7 +14,12 @@ export default function History() {
   const [displayCount, setDisplayCount] = useState(20);
   const [filter, setFilter] = useState<"all" | "training" | "meal" | Discipline>("all");
 
-  if (!goat.isLoaded || !goat.isSetupComplete) {
+  // Proteger: solo renderizar si está cargado y setupeado
+  if (!goat.isLoaded) {
+    return null; // Middleware redirigirá a /login si no está autenticado
+  }
+
+  if (!goat.isSetupComplete) {
     return null;
   }
 
