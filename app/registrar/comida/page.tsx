@@ -4,7 +4,6 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useGoatMode } from "@/hooks/useGoatMode";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -70,12 +69,12 @@ export default function LogMeal() {
         <div className="space-y-3">
           <Label className="text-base font-semibold text-zinc-200">Tipo de Comida</Label>
           <Tabs value={mealType} onValueChange={(v) => setMealType(v as MealType)}>
-            <TabsList className="grid grid-cols-2 gap-2 md:grid-cols-3">
+            <TabsList className="grid grid-cols-2 gap-2 w-full h-auto p-1 md:grid-cols-3">
               {MEAL_TYPES.map((type) => (
                 <TabsTrigger
                   key={type.value}
                   value={type.value}
-                  className="text-sm py-3 px-2"
+                  className="h-12 text-sm px-2 whitespace-normal text-center leading-tight"
                 >
                   {type.label === "Pre-Entrenamiento" ? "Pre-Entr." : type.label === "Post-Entrenamiento" ? "Post-Entr." : type.label}
                 </TabsTrigger>
