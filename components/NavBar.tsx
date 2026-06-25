@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
@@ -29,12 +30,29 @@ const ICON_MAP = {
 export default function NavBar() {
   const pathname = usePathname();
   const router = useRouter();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      setIsAuthenticated(!!user);
+      setIsLoading(false);
+    };
+    checkAuth();
+  }, []);
 
   const handleLogout = async () => {
     const supabase = createClient();
     await supabase.auth.signOut();
     router.push("/login");
   };
+
+  // No mostrar navbar si no está autenticado o está en /login
+  if (isLoading || !isAuthenticated || pathname === "/login") {
+    return null;
+  }
 
   return (
     <>
