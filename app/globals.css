@@ -96,67 +96,67 @@
   }
 
   /* Sliders */
-  input[type="range"] {
-    @apply w-full appearance-none cursor-pointer;
-    height: 28px;
-    accent-color: #3b82f6;
-  }
-
-  input[type="range"]::-webkit-slider-runnable-track {
-    background: #52525b;
-    height: 8px;
-    border-radius: 4px;
-    border: none;
-  }
-
-  input[type="range"]::-webkit-slider-track {
-    background: #52525b;
-    height: 8px;
-    border-radius: 4px;
-    border: none;
-  }
-
-  input[type="range"]::-webkit-slider-thumb {
+  .slider-input {
+    -webkit-appearance: none;
     appearance: none;
-    width: 24px;
-    height: 24px;
-    background: #3b82f6;
-    border-radius: 50%;
+    width: 100%;
+    height: 6px;
+    border-radius: 4px;
+    outline: none;
     cursor: pointer;
-    border: 2px solid white;
-    margin-top: -8px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+    /* background set via inline style gradient in component */
+  }
+
+  .slider-input::-webkit-slider-runnable-track {
+    -webkit-appearance: none;
+    height: 6px;
+    border-radius: 4px;
+    background: transparent;
+  }
+
+  .slider-input::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #3b82f6;
+    border: 3px solid white;
+    margin-top: -11px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+    cursor: pointer;
     transition: transform 0.15s ease;
   }
 
-  input[type="range"]:active::-webkit-slider-thumb {
-    transform: scale(1.15);
+  .slider-input:active::-webkit-slider-thumb {
+    transform: scale(1.2);
   }
 
-  input[type="range"]::-moz-range-track {
-    background: #52525b;
-    height: 8px;
+  .slider-input::-moz-range-track {
+    height: 6px;
     border-radius: 4px;
+    background: #3f3f46;
     border: none;
   }
 
-  input[type="range"]::-moz-range-progress {
+  .slider-input::-moz-range-progress {
     background: #3b82f6;
-    height: 8px;
+    height: 6px;
     border-radius: 4px;
   }
 
-  input[type="range"]::-moz-range-thumb {
-    width: 24px;
-    height: 24px;
-    background: #3b82f6;
+  .slider-input::-moz-range-thumb {
+    width: 28px;
+    height: 28px;
     border-radius: 50%;
+    background: #3b82f6;
+    border: 3px solid white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
     cursor: pointer;
-    border: 2px solid white;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.4);
   }
 
-  input[type="range"]::-moz-range-thumb:hover {
+  /* legacy — keep for any other range inputs */
+  input[type="range"]:not(.slider-input)::-moz-range-thumb:hover {
     background: #60a5fa;
     box-shadow: 0 0 5px rgba(59, 130, 246, 0.4);
   }

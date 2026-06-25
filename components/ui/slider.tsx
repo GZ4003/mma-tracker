@@ -11,6 +11,7 @@ interface SliderProps {
 
 function Slider({ value, onValueChange, min = 0, max = 100, step = 1, className }: SliderProps) {
   const current = Array.isArray(value) ? value[0] : min
+  const progress = ((current - min) / (max - min)) * 100
 
   return (
     <input
@@ -20,7 +21,10 @@ function Slider({ value, onValueChange, min = 0, max = 100, step = 1, className 
       step={step}
       value={current}
       onChange={(e) => onValueChange([Number(e.target.value)])}
-      className={cn("w-full", className)}
+      className={cn("slider-input w-full", className)}
+      style={{
+        background: `linear-gradient(to right, #3b82f6 ${progress}%, #3f3f46 ${progress}%)`
+      }}
     />
   )
 }
