@@ -69,23 +69,22 @@ export default function LogTraining() {
   }
 
   return (
-    <div className="px-4 md:px-6 py-4 md:py-6 pb-32 md:pb-8 max-w-3xl mx-auto">
+    <div className="px-4 py-5 pb-32 max-w-3xl mx-auto md:px-6 md:py-6 md:pb-8">
       <PageHeader
         title="Registrar Entrenamiento"
         subtitle="Registra tu sesión de entrenamiento y gana XP"
       />
 
-      {/* Error Message */}
       {error && (
-        <div className="mb-6 p-4 bg-red-500/20 border-2 border-red-500 rounded-lg">
-          <p className="text-red-400 font-bold text-base">⚠ {error}</p>
+        <div className="mb-5 p-4 bg-red-500/20 border-2 border-red-500 rounded-xl">
+          <p className="text-red-400 font-bold text-base">{error}</p>
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleSubmit} className="space-y-5">
         {/* Date */}
         <div className="space-y-2">
-          <Label className="text-sm font-medium text-zinc-300">Fecha</Label>
+          <Label className="text-base font-semibold text-zinc-200">Fecha</Label>
           <Input
             type="date"
             value={date}
@@ -94,8 +93,8 @@ export default function LogTraining() {
         </div>
 
         {/* Discipline */}
-        <div className="space-y-2">
-          <Label className="text-sm font-medium text-zinc-300">Disciplina</Label>
+        <div className="space-y-3">
+          <Label className="text-base font-semibold text-zinc-200">Disciplina</Label>
           <DisciplinePicker
             selected={discipline}
             onChange={setDiscipline}
@@ -105,7 +104,7 @@ export default function LogTraining() {
 
         {/* Duration */}
         <div className="space-y-2">
-          <Label className="text-sm font-medium text-zinc-300">Duración (minutos)</Label>
+          <Label className="text-base font-semibold text-zinc-200">Duración (minutos)</Label>
           <Input
             type="number"
             value={duration}
@@ -115,10 +114,10 @@ export default function LogTraining() {
         </div>
 
         {/* Energy Level */}
-        <div className="space-y-4 bg-slate-900/40 border border-blue-600/20 rounded-lg p-5 md:p-4">
+        <div className="space-y-4 bg-zinc-900 border border-blue-600/30 rounded-xl p-5">
           <div className="flex justify-between items-center">
-            <Label className="text-base md:text-sm font-bold text-blue-300">Nivel de Energía</Label>
-            <span className="text-lg md:text-base font-bold text-blue-400">{energy[0]}/10</span>
+            <Label className="text-base font-semibold text-zinc-200">Nivel de Energía</Label>
+            <span className="text-xl font-bold text-blue-400">{energy[0]}/10</span>
           </div>
           <Slider
             value={energy}
@@ -126,9 +125,9 @@ export default function LogTraining() {
             min={1}
             max={10}
             step={1}
-            className="w-full py-4 md:py-2"
+            className="w-full py-3"
           />
-          <div className="flex justify-between text-xs text-zinc-400 mt-2">
+          <div className="flex justify-between text-sm text-zinc-400">
             <span>Cansado</span>
             <span>Normal</span>
             <span>Explosivo</span>
@@ -136,8 +135,8 @@ export default function LogTraining() {
         </div>
 
         {/* Techniques */}
-        <div className="space-y-2">
-          <Label className="text-sm font-medium text-zinc-300">Técnicas (opcional)</Label>
+        <div className="space-y-3">
+          <Label className="text-base font-semibold text-zinc-200">Técnicas (opcional)</Label>
           <div className="flex gap-2">
             <Input
               value={techniqueInput}
@@ -153,17 +152,17 @@ export default function LogTraining() {
             <Button
               type="button"
               onClick={handleAddTechnique}
-              className="btn-primary"
+              className="btn-primary shrink-0 h-12"
             >
               Agregar
             </Button>
           </div>
           {techniques.length > 0 && (
-            <div className="flex flex-wrap gap-2 mt-2">
+            <div className="flex flex-wrap gap-2">
               {techniques.map((tech, idx) => (
                 <Badge
                   key={idx}
-                  className="bg-goat-yellow/20 text-goat-yellow border-goat-yellow/30 cursor-pointer hover:bg-goat-yellow/30"
+                  className="bg-blue-600/20 text-blue-300 border-blue-500/30 cursor-pointer hover:bg-red-600/20 hover:text-red-300 hover:border-red-500/30 text-sm py-1 px-3 transition-colors"
                   onClick={() => handleRemoveTechnique(idx)}
                 >
                   {tech} ×
@@ -175,7 +174,7 @@ export default function LogTraining() {
 
         {/* Notes */}
         <div className="space-y-2">
-          <Label className="text-sm font-medium text-zinc-300">Notas (opcional)</Label>
+          <Label className="text-base font-semibold text-zinc-200">Notas (opcional)</Label>
           <Textarea
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
@@ -183,7 +182,6 @@ export default function LogTraining() {
           />
         </div>
 
-        {/* Submit Button */}
         <Button
           type="submit"
           className="w-full btn-primary font-bold text-lg py-6 tracking-widest"

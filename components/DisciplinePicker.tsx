@@ -31,15 +31,16 @@ export default function DisciplinePicker({
         return (
           <button
             key={discipline.value}
+            type="button"
             onClick={() => handleToggle(discipline.value)}
-            className={`flex flex-col items-center gap-2 p-4 rounded-lg border transition-all ${
+            className={`flex flex-col items-center gap-2 py-5 px-3 rounded-xl border-2 transition-all active:scale-95 ${
               isSelected
-                ? "bg-zinc-800 border-blue-600 text-blue-300"
-                : "bg-zinc-900 border-zinc-700 text-zinc-400 hover:border-zinc-600"
+                ? "bg-blue-600/15 border-blue-500 text-blue-300"
+                : "bg-zinc-900 border-zinc-700 text-zinc-400 hover:border-zinc-500"
             }`}
           >
-            <span className="text-3xl">{discipline.emoji}</span>
-            <span className="text-xs font-medium">{discipline.label}</span>
+            <span className="text-4xl">{discipline.emoji}</span>
+            <span className="text-sm font-semibold">{discipline.label}</span>
           </button>
         );
       })}
