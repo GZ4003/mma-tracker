@@ -34,7 +34,7 @@ export default function RootLayout({
     >
       <body className="bg-background text-foreground font-sans min-h-screen antialiased transition-colors duration-300">
         <NavBar />
-        <main className="pb-32 md:pb-8 md:pl-64">{children}</main>
+        <main className="pb-20 md:pb-8 md:pl-64">{children}</main>
       </body>
     </html>
   );

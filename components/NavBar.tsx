@@ -58,7 +58,7 @@ export default function NavBar() {
   return (
     <>
       {/* Mobile Bottom Nav */}
-      <nav className="fixed bottom-0 left-0 right-0 h-20 bg-background border-t border-border flex justify-around items-start pt-2 z-40 md:hidden shadow-lg">
+      <nav className="fixed bottom-0 left-0 right-0 h-16 bg-background border-t border-border flex justify-around items-center z-40 md:hidden shadow-lg">
         {NAVBAR_LINKS.map((link) => {
           const Icon =
             ICON_MAP[link.icon as keyof typeof ICON_MAP];
@@ -67,48 +67,48 @@ export default function NavBar() {
             <Link
               key={link.href}
               href={link.href}
-              className={`flex flex-col items-center justify-center flex-1 h-16 transition-colors ${
+              className={`flex items-center justify-center flex-1 h-16 transition-colors ${
                 isActive
                   ? "text-blue-600 dark:text-blue-400"
                   : "text-muted-foreground hover:text-foreground"
               }`}
+              title={link.label}
             >
-              <Icon size={22} />
-              <span className="text-xs mt-1">{link.label}</span>
+              <Icon size={24} />
             </Link>
           );
         })}
 
         {/* User Menu Dropdown on mobile */}
-        <div className="relative flex-1">
+        <div className="relative flex items-center justify-center flex-1 h-16">
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="flex flex-col items-center justify-center w-full h-16 transition-colors text-muted-foreground hover:text-foreground"
+            className="flex items-center justify-center h-16 transition-colors text-muted-foreground hover:text-foreground"
+            title="Menu"
           >
-            <User size={22} />
-            <span className="text-xs mt-1">Más</span>
+            <User size={24} />
           </button>
 
           {/* Dropdown Menu */}
           {isMenuOpen && (
-            <div className="absolute bottom-20 right-0 bg-background border border-border rounded-lg shadow-lg overflow-hidden z-50 w-48">
+            <div className="absolute bottom-16 right-2 bg-background border border-border rounded-lg shadow-lg overflow-hidden z-50 w-40">
               <Link
                 href="/profile"
                 onClick={() => setIsMenuOpen(false)}
-                className="flex items-center gap-3 px-4 py-3 text-blue-400 hover:bg-blue-600/10 transition-colors w-full"
+                className="flex items-center gap-2 px-3 py-2 text-blue-400 hover:bg-blue-600/10 transition-colors w-full text-sm"
               >
-                <User size={18} />
-                <span className="text-sm font-medium">Perfil</span>
+                <User size={16} />
+                <span className="font-medium">Perfil</span>
               </Link>
               <button
                 onClick={() => {
                   handleLogout();
                   setIsMenuOpen(false);
                 }}
-                className="flex items-center gap-3 px-4 py-3 text-red-400 hover:bg-red-600/10 transition-colors w-full text-left"
+                className="flex items-center gap-2 px-3 py-2 text-red-400 hover:bg-red-600/10 transition-colors w-full text-left text-sm"
               >
-                <LogOut size={18} />
-                <span className="text-sm font-medium">Salir</span>
+                <LogOut size={16} />
+                <span className="font-medium">Salir</span>
               </button>
             </div>
           )}
