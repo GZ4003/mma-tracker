@@ -69,7 +69,7 @@ export default function LogTraining() {
   }
 
   return (
-    <div className="px-4 md:px-6 py-4 md:py-6 max-w-3xl mx-auto">
+    <div className="px-4 md:px-6 py-4 md:py-6 pb-32 md:pb-8 max-w-3xl mx-auto">
       <PageHeader
         title="Registrar Entrenamiento"
         subtitle="Registra tu sesión de entrenamiento y gana XP"
@@ -115,10 +115,10 @@ export default function LogTraining() {
         </div>
 
         {/* Energy Level */}
-        <div className="space-y-3">
+        <div className="space-y-4 bg-slate-900/40 border border-blue-600/20 rounded-lg p-5 md:p-4">
           <div className="flex justify-between items-center">
-            <Label className="text-sm font-medium text-zinc-300">Nivel de Energía</Label>
-            <span className="text-sm font-semibold text-zinc-300">{energy[0]}/10</span>
+            <Label className="text-base md:text-sm font-bold text-blue-300">⚡ Nivel de Energía</Label>
+            <span className="text-lg md:text-base font-bold text-blue-400">{energy[0]}/10</span>
           </div>
           <Slider
             value={energy}
@@ -126,9 +126,9 @@ export default function LogTraining() {
             min={1}
             max={10}
             step={1}
-            className="w-full"
+            className="w-full py-4 md:py-2"
           />
-          <div className="flex justify-between text-xs text-zinc-400">
+          <div className="flex justify-between text-xs text-zinc-400 mt-2">
             <span>Cansado</span>
             <span>Normal</span>
             <span>Explosivo</span>
