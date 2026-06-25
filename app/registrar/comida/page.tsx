@@ -47,7 +47,7 @@ export default function LogMeal() {
   }
 
   return (
-    <div className="px-4 py-5 pb-32 max-w-4xl mx-auto md:px-6 md:py-6 md:pb-8">
+    <div className="px-4 py-5 pb-32 max-w-4xl mx-auto overflow-x-hidden md:px-6 md:py-6 md:pb-8">
       <PageHeader
         title="Registrar Comida"
         subtitle="Mantén el control de tu nutrición"
@@ -68,14 +68,14 @@ export default function LogMeal() {
         <div className="space-y-3">
           <Label className="text-base font-semibold text-zinc-200">Tipo de Comida</Label>
           <Tabs value={mealType} onValueChange={(v) => setMealType(v as MealType)}>
-            <TabsList className="grid grid-cols-3 gap-2 md:grid-cols-6">
+            <TabsList className="grid grid-cols-2 gap-2 md:grid-cols-3">
               {MEAL_TYPES.map((type) => (
                 <TabsTrigger
                   key={type.value}
                   value={type.value}
-                  className="text-sm py-3"
+                  className="text-sm py-3 px-2"
                 >
-                  {type.label}
+                  {type.label === "Pre-Entrenamiento" ? "Pre-Entr." : type.label === "Post-Entrenamiento" ? "Post-Entr." : type.label}
                 </TabsTrigger>
               ))}
             </TabsList>

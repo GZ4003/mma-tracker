@@ -69,7 +69,7 @@ export default function LogTraining() {
   }
 
   return (
-    <div className="px-4 py-5 pb-32 max-w-3xl mx-auto md:px-6 md:py-6 md:pb-8">
+    <div className="px-4 py-5 pb-32 max-w-3xl mx-auto overflow-x-hidden md:px-6 md:py-6 md:pb-8">
       <PageHeader
         title="Registrar Entrenamiento"
         subtitle="Registra tu sesión de entrenamiento y gana XP"

@@ -27,21 +27,24 @@ function Slider({
       thumbAlignment="edge"
       {...props}
     >
-      <SliderPrimitive.Control className="relative flex w-full touch-none items-center select-none data-disabled:opacity-50 data-vertical:h-full data-vertical:min-h-40 data-vertical:w-auto data-vertical:flex-col">
+      <SliderPrimitive.Control className="relative flex w-full touch-none items-center select-none data-disabled:opacity-50">
         <SliderPrimitive.Track
           data-slot="slider-track"
-          className="relative grow overflow-hidden rounded-full bg-zinc-600 select-none data-horizontal:h-2 data-horizontal:w-full data-vertical:h-full data-vertical:w-2"
+          className="relative grow overflow-hidden rounded-full h-2 w-full"
+          style={{ backgroundColor: '#52525b' }}
         >
           <SliderPrimitive.Indicator
             data-slot="slider-range"
-            className="bg-blue-500 select-none data-horizontal:h-full data-vertical:w-full"
+            className="absolute inset-y-0 left-0"
+            style={{ backgroundColor: '#3b82f6' }}
           />
         </SliderPrimitive.Track>
         {Array.from({ length: _values.length }, (_, index) => (
           <SliderPrimitive.Thumb
             data-slot="slider-thumb"
             key={index}
-            className="relative block size-5 shrink-0 rounded-full border-2 border-white bg-blue-500 shadow-lg ring-blue-400/50 transition-[color,box-shadow] select-none after:absolute after:-inset-3 hover:ring-4 focus-visible:ring-4 focus-visible:outline-hidden active:ring-4 active:scale-110 disabled:pointer-events-none disabled:opacity-50"
+            className="relative block size-5 shrink-0 rounded-full border-2 border-white shadow-lg select-none after:absolute after:-inset-3 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 active:scale-110 transition-transform"
+            style={{ backgroundColor: '#3b82f6' }}
           />
         ))}
       </SliderPrimitive.Control>
