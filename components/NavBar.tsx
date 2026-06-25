@@ -57,7 +57,7 @@ export default function NavBar() {
   return (
     <>
       {/* Mobile Bottom Nav */}
-      <nav className="fixed bottom-0 left-0 right-0 h-16 bg-card border-t border-border flex justify-around items-center z-40 md:hidden">
+      <nav className="fixed bottom-0 left-0 right-0 h-20 bg-card border-t border-border flex justify-around items-start pt-2 z-40 md:hidden">
         {NAVBAR_LINKS.map((link) => {
           const Icon =
             ICON_MAP[link.icon as keyof typeof ICON_MAP];
@@ -66,17 +66,38 @@ export default function NavBar() {
             <Link
               key={link.href}
               href={link.href}
-              className={`flex flex-col items-center justify-center w-16 h-16 transition-colors ${
+              className={`flex flex-col items-center justify-center flex-1 h-16 transition-colors ${
                 isActive
                   ? "text-blue-600 dark:text-blue-400"
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >
-              <Icon size={24} />
+              <Icon size={22} />
               <span className="text-xs mt-1">{link.label}</span>
             </Link>
           );
         })}
+
+        {/* Profile & Logout on mobile */}
+        <Link
+          href="/profile"
+          className={`flex flex-col items-center justify-center flex-1 h-16 transition-colors ${
+            pathname === "/profile"
+              ? "text-blue-600 dark:text-blue-400"
+              : "text-muted-foreground hover:text-foreground"
+          }`}
+        >
+          <User size={22} />
+          <span className="text-xs mt-1">Perfil</span>
+        </Link>
+
+        <button
+          onClick={handleLogout}
+          className="flex flex-col items-center justify-center flex-1 h-16 transition-colors text-muted-foreground hover:text-foreground"
+        >
+          <LogOut size={22} />
+          <span className="text-xs mt-1">Salir</span>
+        </button>
       </nav>
 
       {/* Desktop Left Sidebar */}
