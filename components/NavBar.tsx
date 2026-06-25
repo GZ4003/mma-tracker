@@ -90,24 +90,25 @@ export default function NavBar() {
 
           {/* Dropdown Menu */}
           {isMenuOpen && (
-            <div className="absolute bottom-16 right-2 bg-background border border-border rounded-lg shadow-lg overflow-hidden z-50 w-40">
+            <div className="absolute bottom-16 right-2 bg-slate-950 border border-blue-600/30 rounded-lg shadow-2xl overflow-hidden z-50 w-40">
               <Link
                 href="/profile"
                 onClick={() => setIsMenuOpen(false)}
-                className="flex items-center gap-2 px-3 py-2 text-blue-400 hover:bg-blue-600/10 transition-colors w-full text-sm"
+                className="flex items-center gap-2 px-4 py-3 text-blue-400 hover:bg-blue-600/20 transition-colors w-full text-sm font-medium"
               >
-                <User size={16} />
-                <span className="font-medium">Perfil</span>
+                <User size={18} />
+                <span>Perfil</span>
               </Link>
+              <div className="h-px bg-border" />
               <button
                 onClick={() => {
                   handleLogout();
                   setIsMenuOpen(false);
                 }}
-                className="flex items-center gap-2 px-3 py-2 text-red-400 hover:bg-red-600/10 transition-colors w-full text-left text-sm"
+                className="flex items-center gap-2 px-4 py-3 text-red-400 hover:bg-red-600/20 transition-colors w-full text-left text-sm font-medium"
               >
-                <LogOut size={16} />
-                <span className="font-medium">Salir</span>
+                <LogOut size={18} />
+                <span>Salir</span>
               </button>
             </div>
           )}
