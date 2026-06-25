@@ -27,16 +27,6 @@ const ICON_MAP = {
   History,
 } as const;
 
-const EMOJI_MAP: Record<string, string> = {
-  LayoutDashboard: "📊",
-  Dumbbell: "💪",
-  Utensils: "🍽️",
-  TrendingUp: "📈",
-  Trophy: "🏆",
-  Zap: "⚡",
-  History: "📜",
-};
-
 export default function NavBar() {
   const pathname = usePathname();
   const router = useRouter();
@@ -70,20 +60,20 @@ export default function NavBar() {
       {/* Mobile Bottom Nav */}
       <nav className="fixed bottom-0 left-0 right-0 h-16 bg-slate-950 border-t border-blue-600/30 flex justify-around items-center z-40 md:hidden shadow-2xl">
         {NAVBAR_LINKS.map((link) => {
-          const emoji = EMOJI_MAP[link.icon as keyof typeof EMOJI_MAP];
+          const Icon = ICON_MAP[link.icon as keyof typeof ICON_MAP];
           const isActive = pathname === link.href;
           return (
             <Link
               key={link.href}
               href={link.href}
-              className={`flex items-center justify-center flex-1 h-16 transition-colors text-xl ${
+              className={`flex items-center justify-center flex-1 h-16 transition-colors ${
                 isActive
                   ? "text-blue-400"
                   : "text-zinc-400 hover:text-blue-300"
               }`}
               title={link.label}
             >
-              {emoji}
+              <Icon size={24} />
             </Link>
           );
         })}
@@ -92,10 +82,10 @@ export default function NavBar() {
         <div className="relative flex items-center justify-center flex-1 h-16">
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="flex items-center justify-center h-16 transition-colors text-xl text-zinc-400 hover:text-blue-300"
+            className="flex items-center justify-center h-16 transition-colors text-zinc-400 hover:text-blue-300"
             title="Menu"
           >
-            👤
+            <User size={24} />
           </button>
 
           {/* Dropdown Menu */}
@@ -123,6 +113,24 @@ export default function NavBar() {
           )}
         </div>
       </nav>
+
+      {/* Desktop Top Right Menu */}
+      <div className="hidden md:fixed md:top-4 md:right-4 md:z-40 md:flex md:gap-2">
+        <Link
+          href="/profile"
+          className="flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-600/10 hover:bg-blue-600/20 text-blue-300 transition-colors"
+        >
+          <User size={20} />
+          <span className="text-sm font-medium">Perfil</span>
+        </Link>
+        <button
+          onClick={handleLogout}
+          className="flex items-center gap-2 px-4 py-2 rounded-lg bg-red-600/10 hover:bg-red-600/20 text-red-400 transition-colors"
+        >
+          <LogOut size={20} />
+          <span className="text-sm font-medium">Salir</span>
+        </button>
+      </div>
 
       {/* Desktop Left Sidebar */}
       <nav className="hidden md:fixed md:left-0 md:top-0 md:h-screen md:w-64 md:bg-card md:flex md:flex-col md:border-r md:border-border md:z-40">
@@ -162,21 +170,7 @@ export default function NavBar() {
         </div>
 
         <div className="p-4 space-y-3 border-t border-border">
-          <Link
-            href="/profile"
-            className="w-full flex items-center gap-3 px-4 py-3 rounded-lg bg-blue-500/10 hover:bg-blue-500/20 text-blue-700 dark:text-blue-300 transition-all duration-300"
-          >
-            <User size={20} />
-            <span className="text-sm font-medium">Perfil</span>
-          </Link>
-          <button
-            onClick={handleLogout}
-            className="w-full flex items-center gap-3 px-4 py-3 rounded-lg bg-blue-600/10 hover:bg-blue-600/20 text-blue-700 dark:text-blue-300 transition-all duration-300"
-          >
-            <LogOut size={20} />
-            <span className="text-sm font-medium">Logout</span>
-          </button>
-          <p className="text-xs text-muted-foreground text-center mt-4">v1.0</p>
+          <p className="text-xs text-muted-foreground text-center">v1.0</p>
         </div>
       </nav>
     </>
