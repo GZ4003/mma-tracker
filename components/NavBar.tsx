@@ -32,6 +32,7 @@ export default function NavBar() {
   const router = useRouter();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -78,26 +79,40 @@ export default function NavBar() {
           );
         })}
 
-        {/* Profile & Logout on mobile */}
-        <Link
-          href="/profile"
-          className={`flex flex-col items-center justify-center flex-1 h-16 transition-colors ${
-            pathname === "/profile"
-              ? "text-blue-600 dark:text-blue-400"
-              : "text-muted-foreground hover:text-foreground"
-          }`}
-        >
-          <User size={22} />
-          <span className="text-xs mt-1">Perfil</span>
-        </Link>
+        {/* User Menu Dropdown on mobile */}
+        <div className="relative flex-1">
+          <button
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className="flex flex-col items-center justify-center w-full h-16 transition-colors text-muted-foreground hover:text-foreground"
+          >
+            <User size={22} />
+            <span className="text-xs mt-1">Más</span>
+          </button>
 
-        <button
-          onClick={handleLogout}
-          className="flex flex-col items-center justify-center flex-1 h-16 transition-colors text-muted-foreground hover:text-foreground"
-        >
-          <LogOut size={22} />
-          <span className="text-xs mt-1">Salir</span>
-        </button>
+          {/* Dropdown Menu */}
+          {isMenuOpen && (
+            <div className="absolute bottom-20 right-0 bg-background border border-border rounded-lg shadow-lg overflow-hidden z-50 w-48">
+              <Link
+                href="/profile"
+                onClick={() => setIsMenuOpen(false)}
+                className="flex items-center gap-3 px-4 py-3 text-blue-400 hover:bg-blue-600/10 transition-colors w-full"
+              >
+                <User size={18} />
+                <span className="text-sm font-medium">Perfil</span>
+              </Link>
+              <button
+                onClick={() => {
+                  handleLogout();
+                  setIsMenuOpen(false);
+                }}
+                className="flex items-center gap-3 px-4 py-3 text-red-400 hover:bg-red-600/10 transition-colors w-full text-left"
+              >
+                <LogOut size={18} />
+                <span className="text-sm font-medium">Salir</span>
+              </button>
+            </div>
+          )}
+        </div>
       </nav>
 
       {/* Desktop Left Sidebar */}
