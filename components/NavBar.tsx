@@ -57,7 +57,7 @@ export default function NavBar() {
   return (
     <>
       {/* Mobile Bottom Nav */}
-      <nav className="fixed bottom-0 left-0 right-0 h-20 bg-card border-t border-border flex justify-around items-start pt-2 z-40 md:hidden">
+      <nav className="fixed bottom-0 left-0 right-0 h-20 bg-background border-t border-border flex justify-around items-start pt-2 z-40 md:hidden shadow-lg">
         {NAVBAR_LINKS.map((link) => {
           const Icon =
             ICON_MAP[link.icon as keyof typeof ICON_MAP];
