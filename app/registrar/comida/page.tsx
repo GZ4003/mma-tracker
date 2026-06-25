@@ -56,13 +56,15 @@ export default function LogMeal() {
         {/* Date */}
         <div className="space-y-2">
           <Label className="text-base font-semibold text-zinc-200">Fecha</Label>
-          <input
-            type="date"
-            value={date}
-            onChange={(e) => setDate(e.target.value)}
-            className="h-12 w-full max-w-full block rounded-lg border border-zinc-700 bg-zinc-900 px-4 py-3 text-base text-white outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/30"
-            style={{ boxSizing: 'border-box' }}
-          />
+          <div className="w-full overflow-hidden rounded-lg">
+            <input
+              type="date"
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
+              className="h-12 w-full block rounded-lg border border-zinc-700 bg-zinc-900 px-4 py-3 text-base text-white outline-none focus:border-blue-500"
+              style={{ boxSizing: 'border-box', maxWidth: '100%' }}
+            />
+          </div>
         </div>
 
         {/* Meal Type */}

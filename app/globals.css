@@ -85,6 +85,16 @@
     @apply bg-slate-900 text-white;
   }
 
+  /* Date input — prevent iOS overflow */
+  input[type="date"] {
+    -webkit-appearance: none;
+    appearance: none;
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
   /* Sliders */
   input[type="range"] {
     @apply w-full appearance-none cursor-pointer;
