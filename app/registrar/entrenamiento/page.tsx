@@ -117,7 +117,7 @@ export default function LogTraining() {
         {/* Energy Level */}
         <div className="space-y-4 bg-slate-900/40 border border-blue-600/20 rounded-lg p-5 md:p-4">
           <div className="flex justify-between items-center">
-            <Label className="text-base md:text-sm font-bold text-blue-300">⚡ Nivel de Energía</Label>
+            <Label className="text-base md:text-sm font-bold text-blue-300">Nivel de Energía</Label>
             <span className="text-lg md:text-base font-bold text-blue-400">{energy[0]}/10</span>
           </div>
           <Slider

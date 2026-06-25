@@ -58,7 +58,7 @@ export default function NavBar() {
   return (
     <>
       {/* Mobile Bottom Nav */}
-      <nav className="fixed bottom-0 left-0 right-0 h-16 bg-slate-950 border-t border-blue-600/30 flex justify-around items-center z-40 md:hidden shadow-2xl">
+      <nav className="fixed bottom-0 left-0 right-0 h-16 bg-slate-950 border-t border-blue-600/30 flex justify-around items-center z-50 md:hidden shadow-2xl" style={{ transform: 'translate3d(0,0,0)', WebkitTransform: 'translate3d(0,0,0)' }}>
         {NAVBAR_LINKS.map((link) => {
           const Icon = ICON_MAP[link.icon as keyof typeof ICON_MAP];
           const isActive = pathname === link.href;
