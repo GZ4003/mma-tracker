@@ -1,7 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { useGoatMode } from "@/hooks/useGoatMode";
+import { createClient } from "@/lib/supabase/client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import PageHeader from "@/components/PageHeader";
@@ -10,16 +12,27 @@ import { DISCIPLINES } from "@/lib/constants";
 import type { Discipline } from "@/types";
 
 export default function History() {
+  const router = useRouter();
   const goat = useGoatMode();
   const [displayCount, setDisplayCount] = useState(20);
   const [filter, setFilter] = useState<"all" | "training" | "meal" | Discipline>("all");
+  const [isAuthed, setIsAuthed] = useState(false);
 
-  // Proteger: solo renderizar si está cargado y setupeado
-  if (!goat.isLoaded) {
-    return null; // Middleware redirigirá a /login si no está autenticado
-  }
+  useEffect(() => {
+    const checkAuth = async () => {
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        router.push("/login");
+        return;
+      }
+      setIsAuthed(true);
+    };
+    checkAuth();
+  }, [router]);
 
-  if (!goat.isSetupComplete) {
+  // Proteger: solo renderizar si está autenticado, cargado y setupeado
+  if (!isAuthed || !goat.isLoaded || !goat.isSetupComplete) {
     return null;
   }
 
