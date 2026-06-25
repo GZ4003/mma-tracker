@@ -74,11 +74,11 @@ export default function ActivityFeed({
   }
 
   return (
-    <div className="space-y-3 max-w-3xl mx-auto">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
       {displayed.map((session) => (
         <Card
           key={session.id}
-          className="bg-goat-surface border-goat-muted/30 p-4"
+          className="bg-goat-surface border border-zinc-700 p-5 rounded-lg flex flex-col"
         >
           <div className="space-y-2">
             {/* Header */}
