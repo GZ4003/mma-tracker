@@ -27,6 +27,16 @@ const ICON_MAP = {
   History,
 } as const;
 
+const EMOJI_MAP: Record<string, string> = {
+  LayoutDashboard: "📊",
+  Dumbbell: "💪",
+  Utensils: "🍽️",
+  TrendingUp: "📈",
+  Trophy: "🏆",
+  Zap: "⚡",
+  History: "📜",
+};
+
 export default function NavBar() {
   const pathname = usePathname();
   const router = useRouter();
@@ -58,23 +68,22 @@ export default function NavBar() {
   return (
     <>
       {/* Mobile Bottom Nav */}
-      <nav className="fixed bottom-0 left-0 right-0 h-16 bg-background border-t border-border flex justify-around items-center z-40 md:hidden shadow-lg">
+      <nav className="fixed bottom-0 left-0 right-0 h-16 bg-slate-950 border-t border-blue-600/30 flex justify-around items-center z-40 md:hidden shadow-2xl">
         {NAVBAR_LINKS.map((link) => {
-          const Icon =
-            ICON_MAP[link.icon as keyof typeof ICON_MAP];
+          const emoji = EMOJI_MAP[link.icon as keyof typeof EMOJI_MAP];
           const isActive = pathname === link.href;
           return (
             <Link
               key={link.href}
               href={link.href}
-              className={`flex items-center justify-center flex-1 h-16 transition-colors ${
+              className={`flex items-center justify-center flex-1 h-16 transition-colors text-xl ${
                 isActive
-                  ? "text-blue-600 dark:text-blue-400"
-                  : "text-muted-foreground hover:text-foreground"
+                  ? "text-blue-400"
+                  : "text-zinc-400 hover:text-blue-300"
               }`}
               title={link.label}
             >
-              <Icon size={24} />
+              {emoji}
             </Link>
           );
         })}
@@ -83,10 +92,10 @@ export default function NavBar() {
         <div className="relative flex items-center justify-center flex-1 h-16">
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="flex items-center justify-center h-16 transition-colors text-muted-foreground hover:text-foreground"
+            className="flex items-center justify-center h-16 transition-colors text-xl text-zinc-400 hover:text-blue-300"
             title="Menu"
           >
-            <User size={24} />
+            👤
           </button>
 
           {/* Dropdown Menu */}
