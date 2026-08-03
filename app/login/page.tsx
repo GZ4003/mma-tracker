@@ -37,7 +37,7 @@ export default function LoginPage() {
         {/* Logo / Title */}
         <div className="text-center mb-12">
           <h1 className="text-5xl font-display text-blue-600 dark:text-blue-400 tracking-wider mb-2">
-            KHABIB MODE
+            MMA Mode
           </h1>
           <p className="text-muted-foreground text-sm tracking-widest">
             Rastreador de entrenamientos MMA

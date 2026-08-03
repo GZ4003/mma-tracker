@@ -139,7 +139,7 @@ export default function NavBar() {
         <div className="p-4 border-b border-blue-600/30 bg-gradient-to-b from-blue-600/20 to-transparent">
           <div className="space-y-2">
             <h1 className="font-display text-5xl font-black text-blue-400 tracking-widest" style={{ textShadow: '0 0 6px rgba(59, 130, 246, 0.15)' }}>
-              KHABIB MODE
+              MMA Mode
             </h1>
             <div className="flex gap-2">
               <div className="h-1 w-20 bg-gradient-to-r from-blue-600 to-blue-500 rounded-full" style={{ boxShadow: '0 0 4px rgba(59, 130, 246, 0.2)' }} />

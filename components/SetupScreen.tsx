@@ -29,7 +29,7 @@ export default function SetupScreen({ onComplete }: SetupScreenProps) {
         {/* Header */}
         <div className="text-center space-y-2">
           <h1 className="text-6xl font-display text-goat-yellow tracking-wider">
-            KHABIB
+            MMA
           </h1>
           <h2 className="text-xl font-display text-goat-white tracking-wide">
             MODE

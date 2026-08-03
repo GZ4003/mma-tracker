@@ -133,4 +133,5 @@ export interface UseGoatModeReturn {
   getCurrentChallenges: () => Array<Challenge & { progress: number }>;
   getDisciplineRanks: () => DisciplineRank[];
   getAchievements: () => Achievement[];
+  checkWeeklyPenalty: () => void;
 }

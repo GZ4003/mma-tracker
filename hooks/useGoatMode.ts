@@ -31,6 +31,45 @@ import {
   getNextRankInfo,
   RANK_PROGRESSION,
 } from "@/lib/achievements";
+import { showToast } from "@/components/Toast";
+
+const LAST_PENALTY_CHECK_KEY = "lastPenaltyCheck";
+const WEEKLY_MIN_SESSIONS = 2;
+const WEEKLY_PENALTY_XP = 100;
+
+// --- Week helpers (weeks run Monday–Sunday, using local time) ---
+
+function startOfDay(d: Date): Date {
+  return new Date(d.getFullYear(), d.getMonth(), d.getDate());
+}
+
+// Monday (at local midnight) of the week containing `d`.
+function getWeekStart(d: Date): Date {
+  const s = startOfDay(d);
+  const day = s.getDay(); // 0 = Sunday ... 6 = Saturday
+  const diff = day === 0 ? -6 : 1 - day;
+  s.setDate(s.getDate() + diff);
+  return s;
+}
+
+function addDays(d: Date, n: number): Date {
+  const c = new Date(d);
+  c.setDate(c.getDate() + n);
+  return c;
+}
+
+function toISODate(d: Date): string {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+}
+
+// Parse a "YYYY-MM-DD" string as a LOCAL date (avoids UTC off-by-one at midnight).
+function parseLocalDate(s: string): Date {
+  const [y, m, day] = s.split("-").map(Number);
+  return new Date(y, (m ?? 1) - 1, day ?? 1);
+}
 
 const DEFAULT_DATA: GoatModeData = {
   profile: {
@@ -336,6 +375,64 @@ export function useGoatMode(): UseGoatModeReturn {
     return data.achievements;
   }, [data.achievements]);
 
+  // Deduct XP for each fully-passed week in which fewer than 2 training
+  // sessions were logged. Runs once per app open (see PenaltyChecker).
+  const checkWeeklyPenalty = useCallback(() => {
+    if (typeof window === "undefined") return;
+
+    const now = new Date();
+    const stored = window.localStorage.getItem(LAST_PENALTY_CHECK_KEY);
+
+    // First run ever: record today and don't apply penalties retroactively.
+    if (!stored) {
+      window.localStorage.setItem(LAST_PENALTY_CHECK_KEY, toISODate(now));
+      return;
+    }
+
+    const currentWeekStart = getWeekStart(now);
+    const trainingSessions = data.sessions.filter((s) => s.type === "training");
+
+    // Evaluate every fully-passed week from the week of the last check up to
+    // (but not including) the current, still-in-progress week. The week that
+    // contained the last check was in progress then and is now complete, so it
+    // is evaluated exactly once here — no double-counting, no gaps.
+    let weeksPenalized = 0;
+    let weekStart = getWeekStart(parseLocalDate(stored));
+
+    while (weekStart.getTime() < currentWeekStart.getTime()) {
+      const weekEnd = addDays(weekStart, 7); // exclusive upper bound
+      const sessionCount = trainingSessions.filter((s) => {
+        if (!s.date) return false;
+        const d = parseLocalDate(s.date);
+        return d.getTime() >= weekStart.getTime() && d.getTime() < weekEnd.getTime();
+      }).length;
+
+      if (sessionCount < WEEKLY_MIN_SESSIONS) {
+        weeksPenalized += 1;
+      }
+      weekStart = weekEnd;
+    }
+
+    // Record that we've processed everything up to today.
+    window.localStorage.setItem(LAST_PENALTY_CHECK_KEY, toISODate(now));
+
+    if (weeksPenalized > 0) {
+      const penalty = weeksPenalized * WEEKLY_PENALTY_XP;
+      setData((prev) => {
+        const newXP = Math.max(0, prev.profile.totalXP - penalty);
+        return {
+          ...prev,
+          profile: {
+            ...prev.profile,
+            totalXP: newXP,
+            level: getLevelFromXP(newXP),
+          },
+        };
+      });
+      showToast("You missed training last week. -100 XP");
+    }
+  }, [data.sessions]);
+
   return {
     profile: isSetupComplete ? data.profile : null,
     sessions: data.sessions,
@@ -356,5 +453,6 @@ export function useGoatMode(): UseGoatModeReturn {
     getCurrentChallenges,
     getDisciplineRanks,
     getAchievements,
+    checkWeeklyPenalty,
   };
 }

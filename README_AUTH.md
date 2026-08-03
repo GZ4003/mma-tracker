@@ -1,4 +1,4 @@
-# KHABIB MODE: Autenticación con Google + Persistencia de Datos
+# MMA Mode: Autenticación con Google + Persistencia de Datos
 
 ## Estado: ✅ IMPLEMENTADO Y COMPILANDO
 
