@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useGoatMode } from "@/hooks/useGoatMode";
+import { useMmaMode } from "@/hooks/useMmaMode";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -14,7 +14,7 @@ import type { MealType } from "@/types";
 
 export default function LogMeal() {
   const router = useRouter();
-  const goat = useGoatMode();
+  const mma = useMmaMode();
 
   const today = new Date().toISOString().split("T")[0];
   const [date, setDate] = useState(today);
@@ -32,7 +32,7 @@ export default function LogMeal() {
       return;
     }
 
-    goat.logMeal({
+    mma.logMeal({
       date,
       mealType,
       mealDescription: description,
@@ -42,7 +42,7 @@ export default function LogMeal() {
     router.push("/");
   };
 
-  if (!goat.isLoaded || !goat.isSetupComplete) {
+  if (!mma.isLoaded || !mma.isSetupComplete) {
     return null;
   }
 
@@ -56,25 +56,25 @@ export default function LogMeal() {
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Date */}
         <div className="space-y-2">
-          <Label className="text-goat-white">Fecha</Label>
+          <Label className="text-mma-white">Fecha</Label>
           <Input
             type="date"
             value={date}
             onChange={(e) => setDate(e.target.value)}
-            className="bg-goat-surface border-goat-muted/30 text-goat-white"
+            className="bg-mma-surface border-mma-muted/30 text-mma-white"
           />
         </div>
 
         {/* Meal Type */}
         <div className="space-y-2">
-          <Label className="text-goat-white">Tipo de Comida</Label>
+          <Label className="text-mma-white">Tipo de Comida</Label>
           <Tabs value={mealType} onValueChange={(v) => setMealType(v as MealType)}>
-            <TabsList className="grid grid-cols-3 md:grid-cols-6 gap-2 bg-goat-surface">
+            <TabsList className="grid grid-cols-3 md:grid-cols-6 gap-2 bg-mma-surface">
               {MEAL_TYPES.map((type) => (
                 <TabsTrigger
                   key={type.value}
                   value={type.value}
-                  className="data-[state=active]:bg-goat-yellow data-[state=active]:text-goat-bg text-xs"
+                  className="data-[state=active]:bg-mma-yellow data-[state=active]:text-mma-bg text-xs"
                 >
                   {type.label}
                 </TabsTrigger>
@@ -85,33 +85,33 @@ export default function LogMeal() {
 
         {/* Description */}
         <div className="space-y-2">
-          <Label className="text-goat-white">¿Qué comiste?</Label>
+          <Label className="text-mma-white">¿Qué comiste?</Label>
           <Textarea
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             placeholder="p.ej., 2 pechugas de pollo, arroz, brócoli"
-            className="bg-goat-surface border-goat-muted/30 text-goat-white placeholder:text-goat-muted min-h-24"
+            className="bg-mma-surface border-mma-muted/30 text-mma-white placeholder:text-mma-muted min-h-24"
           />
         </div>
 
         {/* Notes */}
         <div className="space-y-2">
-          <Label className="text-goat-white">Notas (opcional)</Label>
+          <Label className="text-mma-white">Notas (opcional)</Label>
           <Textarea
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
             placeholder="¿Cómo supo? ¿Cómo te sientes?"
-            className="bg-goat-surface border-goat-muted/30 text-goat-white placeholder:text-goat-muted min-h-20"
+            className="bg-mma-surface border-mma-muted/30 text-mma-white placeholder:text-mma-muted min-h-20"
           />
         </div>
 
         {/* Error */}
-        {error && <p className="text-goat-orange text-sm">{error}</p>}
+        {error && <p className="text-mma-orange text-sm">{error}</p>}
 
         {/* Submit */}
         <Button
           type="submit"
-          className="w-full bg-goat-orange text-goat-white hover:bg-goat-orange/90 font-display text-lg py-6 tracking-widest"
+          className="w-full bg-mma-orange text-mma-white hover:bg-mma-orange/90 font-display text-lg py-6 tracking-widest"
         >
           Registrar Comida
         </Button>

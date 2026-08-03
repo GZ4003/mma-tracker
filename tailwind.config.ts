@@ -24,7 +24,7 @@ const config: Config = {
           DEFAULT: "var(--muted)",
           foreground: "var(--muted-foreground)",
         },
-        goat: {
+        mma: {
           bg: "#0A0A0F",
           surface: "#12121A",
           blue: "#3B82F6",

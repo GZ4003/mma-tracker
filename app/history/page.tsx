@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useGoatMode } from "@/hooks/useGoatMode";
+import { useMmaMode } from "@/hooks/useMmaMode";
 import { createClient } from "@/lib/supabase/client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -13,7 +13,7 @@ import type { Discipline } from "@/types";
 
 export default function History() {
   const router = useRouter();
-  const goat = useGoatMode();
+  const mma = useMmaMode();
   const [displayCount, setDisplayCount] = useState(20);
   const [filter, setFilter] = useState<"all" | "training" | "meal" | Discipline>("all");
   const [isAuthed, setIsAuthed] = useState(false);
@@ -32,17 +32,17 @@ export default function History() {
   }, [router]);
 
   // Proteger: solo renderizar si está autenticado, cargado y setupeado
-  if (!isAuthed || !goat.isLoaded || !goat.isSetupComplete) {
+  if (!isAuthed || !mma.isLoaded || !mma.isSetupComplete) {
     return null;
   }
 
-  const hasMore = goat.sessions.length > displayCount;
+  const hasMore = mma.sessions.length > displayCount;
 
   return (
     <div className="p-4 md:p-6 mx-auto space-y-6">
       <PageHeader
         title="Historial"
-        subtitle={`${goat.sessions.length} entradas totales`}
+        subtitle={`${mma.sessions.length} entradas totales`}
       />
 
       {/* Filters - Tabs */}
@@ -78,7 +78,7 @@ export default function History() {
         {/* Feed - Below Tabs - Scrollable */}
         <TabsContent value={filter} className="space-y-3 w-full min-h-0 flex-1 overflow-y-auto">
           <ActivityFeed
-            sessions={goat.sessions}
+            sessions={mma.sessions}
             limit={displayCount}
             filter={filter}
           />
@@ -92,7 +92,7 @@ export default function History() {
             onClick={() => setDisplayCount((prev) => prev + 20)}
             className="btn-primary"
           >
-            Cargar Más ({goat.sessions.length - displayCount} restantes)
+            Cargar Más ({mma.sessions.length - displayCount} restantes)
           </Button>
         </div>
       )}

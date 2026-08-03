@@ -1,20 +1,20 @@
 "use client";
 
-import { useGoatMode } from "@/hooks/useGoatMode";
+import { useMmaMode } from "@/hooks/useMmaMode";
 import PageHeader from "@/components/PageHeader";
 import AchievementsPanel from "@/components/AchievementsPanel";
 import DisciplineRanks from "@/components/DisciplineRanks";
 import RankProgression from "@/components/RankProgression";
 
 export default function Achievements() {
-  const goat = useGoatMode();
+  const mma = useMmaMode();
 
-  if (!goat.isLoaded || !goat.isSetupComplete) {
+  if (!mma.isLoaded || !mma.isSetupComplete) {
     return null;
   }
 
-  const achievements = goat.getAchievements();
-  const ranks = goat.getDisciplineRanks();
+  const achievements = mma.getAchievements();
+  const ranks = mma.getDisciplineRanks();
 
   return (
     <div className="p-4 md:p-6 max-w-6xl mx-auto space-y-8">
@@ -29,7 +29,7 @@ export default function Achievements() {
       {/* Rank Progression Guide & Achievements */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Rank Scale */}
-        <div className="bg-goat-surface border-goat-muted/30 rounded-lg p-4">
+        <div className="bg-mma-surface border-mma-muted/30 rounded-lg p-4">
           <RankProgression currentRank={ranks.length > 0 ? (ranks[0].rank as import("@/lib/achievements").Rank) : undefined} />
         </div>
 

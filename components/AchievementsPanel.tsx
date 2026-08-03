@@ -13,8 +13,8 @@ export default function AchievementsPanel({
 
   if (achievements.length === 0) {
     return (
-      <Card className="bg-goat-surface border-goat-muted/30 p-6">
-        <p className="text-goat-muted text-sm">Sin logros disponibles aún.</p>
+      <Card className="bg-mma-surface border-mma-muted/30 p-6">
+        <p className="text-mma-muted text-sm">Sin logros disponibles aún.</p>
       </Card>
     );
   }
@@ -22,10 +22,10 @@ export default function AchievementsPanel({
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h2 className="text-lg font-display text-goat-white tracking-wide">
+        <h2 className="text-lg font-display text-mma-white tracking-wide">
           Logros Desbloqueados
         </h2>
-        <Badge className="bg-goat-yellow/20 text-goat-yellow border-goat-yellow/30">
+        <Badge className="bg-mma-yellow/20 text-mma-yellow border-mma-yellow/30">
           {unlockedCount}/{achievements.length}
         </Badge>
       </div>
@@ -36,19 +36,19 @@ export default function AchievementsPanel({
             key={achievement.id}
             className={`p-4 text-center transition-all ${
               achievement.unlocked
-                ? "bg-goat-surface border-goat-yellow/50"
-                : "bg-goat-bg/50 border-goat-muted/20 opacity-50"
+                ? "bg-mma-surface border-mma-yellow/50"
+                : "bg-mma-bg/50 border-mma-muted/20 opacity-50"
             }`}
           >
             <div className="text-4xl mb-2">{achievement.itemIcon}</div>
-            <p className="text-xs font-medium text-goat-white mb-1">
+            <p className="text-xs font-medium text-mma-white mb-1">
               {achievement.itemName}
             </p>
-            <p className="text-xs text-goat-muted">
+            <p className="text-xs text-mma-muted">
               {achievement.sessionsRequired} sesiones
             </p>
             {achievement.unlocked && (
-              <p className="text-xs text-goat-yellow font-display mt-2">
+              <p className="text-xs text-mma-yellow font-display mt-2">
                 ✓ DESBLOQUEADO
               </p>
             )}

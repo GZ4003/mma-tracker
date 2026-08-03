@@ -109,7 +109,7 @@ middleware.ts         # Protección de rutas (Next.js)
 
 ### Hook principal (modificado)
 
-`hooks/useGoatMode.ts` - Solo cambiaron 2 funciones:
+`hooks/useMmaMode.ts` - Solo cambiaron 2 funciones:
 - `readFromStorage()` - Ahora usa `GET /api/user-data`
 - `writeToStorage()` - Ahora usa `POST /api/user-data`
 

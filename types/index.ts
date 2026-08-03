@@ -70,7 +70,7 @@ export interface Achievement {
   unlockedAt?: string;
 }
 
-export interface GoatModeData {
+export interface MmaModeData {
   profile: Profile;
   sessions: Session[];
   challenges: Challenge[];
@@ -107,7 +107,7 @@ export interface DisciplineRank {
   sessionsToNextRank?: number;
 }
 
-export interface UseGoatModeReturn {
+export interface UseMmaModeReturn {
   profile: Profile | null;
   sessions: Session[];
   challenges: Challenge[];

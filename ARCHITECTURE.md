@@ -21,7 +21,7 @@
 │  └──────────────────────────────────────────────────────────┘  │
 │                                                                  │
 │  State Management:                                              │
-│  • useGoatMode hook → Supabase API (no localStorage)           │
+│  • useMmaMode hook → Supabase API (no localStorage)           │
 │  • setState triggers useEffect → POST /api/user-data          │
 │  • Datos en formato JSONB (mismo que antes)                   │
 │                                                                  │
@@ -181,7 +181,7 @@ Usuario entra a /login
   │
   ▼
 ┌───────────────────────────────────────┐
-│ useGoatMode carga datos                │
+│ useMmaMode carga datos                │
 │ GET /api/user-data                     │
 │ → Busca en user_data table por user_id │
 └───────────────────────────────────────┘
@@ -202,7 +202,7 @@ Usuario acción (registra entrenamiento)
   │
   ▼
 ┌──────────────────────┐
-│ useGoatMode.logSession()
+│ useMmaMode.logSession()
 │ → setData(...)        │
 └──────────────────────┘
   │
@@ -300,7 +300,7 @@ la base de datos (CAPA 3) lo bloquea a nivel de SQL.
 
 ```typescript
 // types/index.ts (no cambió)
-interface GoatModeData {
+interface MmaModeData {
   profile: Profile
   sessions: Session[]
   challenges: Challenge[]
@@ -329,7 +329,7 @@ user_data table:
                             │
                             ▼
 ┌─────────────────────────────────────────────────────────┐
-│ 3. useGoatMode.logSession()                             │
+│ 3. useMmaMode.logSession()                             │
 │    • Calcula XP (mismo código que antes)               │
 │    • Detects nivel up                                   │
 │    • Detecta achievement unlock                        │
@@ -338,7 +338,7 @@ user_data table:
                             │
                             ▼
 ┌─────────────────────────────────────────────────────────┐
-│ 4. useEffect en useGoatMode (isLoaded)                 │
+│ 4. useEffect en useMmaMode (isLoaded)                 │
 │    • Detecta que 'data' cambió                         │
 │    • Llama writeToStorage(data)                        │
 └─────────────────────────────────────────────────────────┘
@@ -346,7 +346,7 @@ user_data table:
                             ▼
 ┌─────────────────────────────────────────────────────────┐
 │ 5. fetch POST /api/user-data                            │
-│    • Body: JSON blob completo (GoatModeData)           │
+│    • Body: JSON blob completo (MmaModeData)           │
 │    • Headers: Content-Type: application/json           │
 └─────────────────────────────────────────────────────────┘
                             │

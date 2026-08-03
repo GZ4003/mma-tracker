@@ -24,7 +24,7 @@
 - ✅ JSONB storage (mismo formato que localStorage)
 
 ### 3. Sincronización cross-device
-- ✅ Hook `useGoatMode` refactorizado para usar API en lugar de localStorage
+- ✅ Hook `useMmaMode` refactorizado para usar API en lugar de localStorage
 - ✅ Datos se cargan al iniciar la app
 - ✅ Datos se guardan automáticamente cuando cambian
 - ✅ Múltiples usuarios (diferentes Gmails) ven datos separados
@@ -60,7 +60,7 @@ MIGRATION_SUMMARY.md                - Cambios técnicos
 
 ## Archivos modificados
 
-### `hooks/useGoatMode.ts`
+### `hooks/useMmaMode.ts`
 - ✅ Función `readFromStorage()` → ahora async, usa API
 - ✅ Función `writeToStorage()` → ahora async, usa API
 - ✅ useEffect de carga → maneja async correctamente
@@ -99,7 +99,7 @@ Google OAuth flow
   ↓
 Redirige a / (dashboard)
   ↓
-useGoatMode carga datos (null porque es primera vez)
+useMmaMode carga datos (null porque es primera vez)
   ↓
 Aparece SetupScreen (flujo existente)
   ↓
@@ -114,7 +114,7 @@ Middleware valida sesión (aún hay cookie)
   ↓
 Dashboard carga
   ↓
-useGoatMode obtiene datos de Supabase
+useMmaMode obtiene datos de Supabase
   ↓
 Muestra datos guardados
 ```
@@ -234,7 +234,7 @@ npm run dev
 
 ```bash
 # Volver a localStorage (temporal)
-git checkout hooks/useGoatMode.ts
+git checkout hooks/useMmaMode.ts
 rm -rf lib/supabase app/auth app/api/user-data app/login middleware.ts
 npm uninstall @supabase/supabase-js @supabase/ssr
 

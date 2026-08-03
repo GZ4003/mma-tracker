@@ -1,12 +1,12 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { useGoatMode } from "@/hooks/useGoatMode";
+import { useMmaMode } from "@/hooks/useMmaMode";
 
 // Runs the weekly XP penalty check once per app open, at startup.
 // Rendered in the root layout so it fires regardless of the current page.
 export default function PenaltyChecker() {
-  const { isLoaded, isSetupComplete, checkWeeklyPenalty } = useGoatMode();
+  const { isLoaded, isSetupComplete, checkWeeklyPenalty } = useMmaMode();
   const hasRun = useRef(false);
 
   useEffect(() => {

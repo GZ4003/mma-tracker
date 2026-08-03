@@ -56,7 +56,7 @@ README_AUTH.md               → Resumen ejecutivo
 
 ## 📝 Archivos modificados
 
-### hooks/useGoatMode.ts (1 archivo)
+### hooks/useMmaMode.ts (1 archivo)
 **Cambios:** Solo 2 funciones modificadas:
 - `readFromStorage()` → Ahora async, usa `GET /api/user-data`
 - `writeToStorage()` → Ahora async, usa `POST /api/user-data`
@@ -159,7 +159,7 @@ Usuario login con Google
     ↓
 Middleware valida sesión (HTTP-only cookie)
     ↓
-useGoatMode.ts carga datos (GET /api/user-data)
+useMmaMode.ts carga datos (GET /api/user-data)
     ↓
 API route valida auth + retorna datos de Supabase
     ↓
@@ -169,7 +169,7 @@ Dashboard muestra datos
     ↓
 Usuario registra entrenamiento
     ↓
-useGoatMode.logSession() + setData()
+useMmaMode.logSession() + setData()
     ↓
 useEffect detecta cambio → writeToStorage()
     ↓

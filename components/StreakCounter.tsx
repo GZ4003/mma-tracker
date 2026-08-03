@@ -19,17 +19,17 @@ export default function StreakCounter({
 
   return (
     <div
-      className={`flex items-center gap-2 px-4 py-3 rounded-lg bg-goat-surface border border-goat-muted/30 ${
+      className={`flex items-center gap-2 px-4 py-3 rounded-lg bg-mma-surface border border-mma-muted/30 ${
         isActive ? "animate-streak-pulse" : ""
       }`}
     >
       <Flame
         size={20}
-        className={isActive ? "text-goat-orange" : "text-goat-muted"}
+        className={isActive ? "text-mma-orange" : "text-mma-muted"}
       />
       <div>
-        <p className="text-xs text-goat-muted">RACHA</p>
-        <p className="text-lg font-display text-goat-white">{streak}</p>
+        <p className="text-xs text-mma-muted">RACHA</p>
+        <p className="text-lg font-display text-mma-white">{streak}</p>
       </div>
     </div>
   );

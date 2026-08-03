@@ -1,6 +1,6 @@
 import { createClient } from '@/lib/supabase/server';
 import { NextRequest, NextResponse } from 'next/server';
-import type { GoatModeData } from '@/types';
+import type { MmaModeData } from '@/types';
 
 // GET /api/user-data - Read user's data from Supabase
 export async function GET() {
@@ -56,7 +56,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Parse request body
-    const payload: GoatModeData = await request.json();
+    const payload: MmaModeData = await request.json();
 
     // Upsert user data (insert if not exists, update if exists)
     const { error } = await supabase

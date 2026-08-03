@@ -24,17 +24,17 @@ export default function XPBar({
     <div className="space-y-2">
       {showLabel && (
         <div className="flex justify-between items-center">
-          <span className="text-sm text-goat-muted">
+          <span className="text-sm text-mma-muted">
             {levelInfo.name}
           </span>
-          <span className="text-xs text-goat-muted">
+          <span className="text-xs text-mma-muted">
             {currentXP} / {levelInfo.maxXP} XP
           </span>
         </div>
       )}
       <Progress
         value={levelInfo.progressPercent}
-        className={`${sizeClasses[size]} bg-goat-surface`}
+        className={`${sizeClasses[size]} bg-mma-surface`}
       />
     </div>
   );

@@ -16,19 +16,19 @@ export default function FighterProfile({
   topRank,
 }: FighterProfileProps): JSX.Element {
   return (
-    <Card className="bg-goat-surface border-goat-muted/30 p-6">
+    <Card className="bg-mma-surface border-mma-muted/30 p-6">
       <div className="space-y-6">
         {/* Name, Global Rank, and Rank Badge */}
         <div className="flex items-start justify-between gap-6">
           <div className="flex-1">
-            <h2 className="text-3xl font-display text-goat-white tracking-wide">
+            <h2 className="text-3xl font-display text-mma-white tracking-wide">
               {profile.name}
             </h2>
-            <p className="text-sm text-goat-muted mt-1">LUCHADOR</p>
+            <p className="text-sm text-mma-muted mt-1">LUCHADOR</p>
           </div>
           <div className="flex items-center gap-4">
             <Badge
-              className="bg-goat-orange/20 text-goat-orange border-goat-orange/30 px-3 py-1 text-xs font-display tracking-widest"
+              className="bg-mma-orange/20 text-mma-orange border-mma-orange/30 px-3 py-1 text-xs font-display tracking-widest"
             >
               {levelInfo.name}
             </Badge>
@@ -47,16 +47,16 @@ export default function FighterProfile({
         />
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-2 gap-3 pt-4 border-t border-goat-muted/20">
+        <div className="grid grid-cols-2 gap-3 pt-4 border-t border-mma-muted/20">
           <div>
-            <p className="text-xs text-goat-muted">NIVEL</p>
-            <p className="text-2xl font-display text-goat-yellow">
+            <p className="text-xs text-mma-muted">NIVEL</p>
+            <p className="text-2xl font-display text-mma-yellow">
               {profile.level + 1}
             </p>
           </div>
           <div>
-            <p className="text-xs text-goat-muted">XP TOTAL</p>
-            <p className="text-2xl font-display text-goat-white">
+            <p className="text-xs text-mma-muted">XP TOTAL</p>
+            <p className="text-2xl font-display text-mma-white">
               {profile.totalXP}
             </p>
           </div>

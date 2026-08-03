@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 type ToastItem = { id: number; message: string };
 
 // Simple module-level pub/sub so non-React code (e.g. the penalty check
-// inside useGoatMode) can trigger a toast without a provider/context.
+// inside useMmaMode) can trigger a toast without a provider/context.
 let listeners: Array<(t: ToastItem) => void> = [];
 let counter = 0;
 
@@ -36,7 +36,7 @@ export function Toaster() {
       {toasts.map((t) => (
         <div
           key={t.id}
-          className="pointer-events-auto bg-goat-surface border border-goat-orange/50 text-goat-white px-5 py-3 rounded-lg shadow-2xl text-sm font-medium animate-in fade-in slide-in-from-top-2"
+          className="pointer-events-auto bg-mma-surface border border-mma-orange/50 text-mma-white px-5 py-3 rounded-lg shadow-2xl text-sm font-medium animate-in fade-in slide-in-from-top-2"
         >
           {t.message}
         </div>

@@ -78,7 +78,7 @@ export default function ActivityFeed({
       {displayed.map((session) => (
         <Card
           key={session.id}
-          className="bg-goat-surface border border-zinc-700 p-5 rounded-lg flex flex-col"
+          className="bg-mma-surface border border-zinc-700 p-5 rounded-lg flex flex-col"
         >
           <div className="space-y-2">
             {/* Header */}
@@ -90,22 +90,22 @@ export default function ActivityFeed({
                       {getDisciplineEmoji(session.discipline)}
                     </span>
                     <div>
-                      <p className="text-sm font-medium text-goat-white capitalize">
+                      <p className="text-sm font-medium text-mma-white capitalize">
                         {session.discipline?.replace("_", " ")}
                       </p>
-                      <p className="text-xs text-goat-muted">
+                      <p className="text-xs text-mma-muted">
                         {getRelativeTime(session.date)}
                       </p>
                     </div>
                   </>
                 ) : (
                   <>
-                    <Utensils size={20} className="text-goat-orange" />
+                    <Utensils size={20} className="text-mma-orange" />
                     <div>
-                      <p className="text-sm font-medium text-goat-white capitalize">
+                      <p className="text-sm font-medium text-mma-white capitalize">
                         {session.mealType?.replace("_", " ")}
                       </p>
-                      <p className="text-xs text-goat-muted">
+                      <p className="text-xs text-mma-muted">
                         {getRelativeTime(session.date)}
                       </p>
                     </div>
@@ -113,14 +113,14 @@ export default function ActivityFeed({
                 )}
               </div>
               {session.xpEarned && (
-                <Badge className="bg-goat-yellow/20 text-goat-yellow border-goat-yellow/30 text-xs">
+                <Badge className="bg-mma-yellow/20 text-mma-yellow border-mma-yellow/30 text-xs">
                   +{session.xpEarned} XP
                 </Badge>
               )}
             </div>
 
             {/* Details */}
-            <div className="flex flex-wrap gap-2 items-center text-xs text-goat-muted">
+            <div className="flex flex-wrap gap-2 items-center text-xs text-mma-muted">
               {session.type === "training" && session.duration && (
                 <div className="flex items-center gap-1">
                   <Clock size={14} />
@@ -137,7 +137,7 @@ export default function ActivityFeed({
 
             {/* Notes/Description */}
             {(session.notes || session.mealDescription) && (
-              <p className="text-sm text-goat-white/70 line-clamp-2">
+              <p className="text-sm text-mma-white/70 line-clamp-2">
                 {session.notes || session.mealDescription}
               </p>
             )}
@@ -149,7 +149,7 @@ export default function ActivityFeed({
                   <Badge
                     key={idx}
                     variant="default"
-                    className="bg-goat-surface border-goat-muted/30 text-goat-muted text-xs"
+                    className="bg-mma-surface border-mma-muted/30 text-mma-muted text-xs"
                   >
                     {tech}
                   </Badge>
@@ -157,7 +157,7 @@ export default function ActivityFeed({
                 {session.techniques.length > 3 && (
                   <Badge
                     variant="default"
-                    className="bg-goat-surface border-goat-muted/30 text-goat-muted text-xs"
+                    className="bg-mma-surface border-mma-muted/30 text-mma-muted text-xs"
                   >
                     +{session.techniques.length - 3}
                   </Badge>

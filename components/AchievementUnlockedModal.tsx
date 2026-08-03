@@ -26,31 +26,31 @@ export default function AchievementUnlockedModal({
       onClick={onDismiss}
     >
       <div
-        className="w-full max-w-md bg-gradient-to-b from-goat-surface to-goat-bg border-2 border-goat-orange rounded-lg p-8 text-center space-y-6 animate-level-up"
+        className="w-full max-w-md bg-gradient-to-b from-mma-surface to-mma-bg border-2 border-mma-orange rounded-lg p-8 text-center space-y-6 animate-level-up"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Text Content */}
         <div className="space-y-3">
-          <h1 className="text-6xl font-display text-goat-orange tracking-wider">
+          <h1 className="text-6xl font-display text-mma-orange tracking-wider">
             ¡LOGRO!
           </h1>
           <p className="text-4xl">{achievement.itemIcon}</p>
-          <p className="text-2xl font-display text-goat-yellow tracking-widest">
+          <p className="text-2xl font-display text-mma-yellow tracking-widest">
             {achievement.itemName}
           </p>
-          <p className="text-goat-muted text-sm">
+          <p className="text-mma-muted text-sm">
             Desbloqueado después de {achievement.sessionsRequired} sesiones
           </p>
         </div>
 
         {/* Decorative Line */}
-        <div className="h-1 bg-gradient-to-r from-transparent via-goat-orange to-transparent" />
+        <div className="h-1 bg-gradient-to-r from-transparent via-mma-orange to-transparent" />
 
         {/* Message */}
-        <div className="bg-goat-bg/50 p-4 rounded-lg border border-goat-muted/20">
-          <p className="text-sm text-goat-white">
+        <div className="bg-mma-bg/50 p-4 rounded-lg border border-mma-muted/20">
+          <p className="text-sm text-mma-white">
             ¡Has conseguido tu primer equipo en{" "}
-            <span className="text-goat-orange font-display">
+            <span className="text-mma-orange font-display">
               {achievement.discipline}
             </span>
             !
@@ -60,7 +60,7 @@ export default function AchievementUnlockedModal({
         {/* Dismiss Button */}
         <Button
           onClick={onDismiss}
-          className="w-full bg-goat-orange text-goat-bg hover:bg-goat-orange/90 font-display text-lg py-6 tracking-widest"
+          className="w-full bg-mma-orange text-mma-bg hover:bg-mma-orange/90 font-display text-lg py-6 tracking-widest"
         >
           ¡INCREÍBLE!
         </Button>

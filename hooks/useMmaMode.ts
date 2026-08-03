@@ -2,14 +2,14 @@
 
 import { useState, useEffect, useCallback } from "react";
 import {
-  GoatModeData,
+  MmaModeData,
   Profile,
   Session,
   Challenge,
   Discipline,
   LevelInfo,
   ProgressStats,
-  UseGoatModeReturn,
+  UseMmaModeReturn,
   Achievement,
   DisciplineRank,
 } from "@/types";
@@ -71,7 +71,7 @@ function parseLocalDate(s: string): Date {
   return new Date(y, (m ?? 1) - 1, day ?? 1);
 }
 
-const DEFAULT_DATA: GoatModeData = {
+const DEFAULT_DATA: MmaModeData = {
   profile: {
     name: "",
     totalXP: 0,
@@ -87,20 +87,20 @@ const DEFAULT_DATA: GoatModeData = {
   version: SCHEMA_VERSION,
 };
 
-async function readFromStorage(): Promise<GoatModeData | null> {
+async function readFromStorage(): Promise<MmaModeData | null> {
   try {
     const res = await fetch('/api/user-data');
     if (!res.ok) return null;
     const data = await res.json();
     // Return null if data is empty object (first time user)
-    return Object.keys(data).length > 0 ? (data as GoatModeData) : null;
+    return Object.keys(data).length > 0 ? (data as MmaModeData) : null;
   } catch {
     console.error("Failed to read from API");
     return null;
   }
 }
 
-async function writeToStorage(data: GoatModeData): Promise<void> {
+async function writeToStorage(data: MmaModeData): Promise<void> {
   try {
     await fetch('/api/user-data', {
       method: 'POST',
@@ -112,8 +112,8 @@ async function writeToStorage(data: GoatModeData): Promise<void> {
   }
 }
 
-export function useGoatMode(): UseGoatModeReturn {
-  const [data, setData] = useState<GoatModeData>(DEFAULT_DATA);
+export function useMmaMode(): UseMmaModeReturn {
+  const [data, setData] = useState<MmaModeData>(DEFAULT_DATA);
   const [isLoaded, setIsLoaded] = useState(false);
   const [levelUpInfo, setLevelUpInfo] = useState<LevelInfo | null>(null);
   const [achievementInfo, setAchievementInfo] = useState<Achievement | null>(null);

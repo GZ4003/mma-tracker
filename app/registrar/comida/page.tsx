@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useGoatMode } from "@/hooks/useGoatMode";
+import { useMmaMode } from "@/hooks/useMmaMode";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
@@ -13,7 +13,7 @@ import type { MealType } from "@/types";
 
 export default function LogMeal() {
   const router = useRouter();
-  const goat = useGoatMode();
+  const mma = useMmaMode();
 
   const today = new Date().toISOString().split("T")[0];
   const [date, setDate] = useState(today);
@@ -31,7 +31,7 @@ export default function LogMeal() {
       return;
     }
 
-    goat.logMeal({
+    mma.logMeal({
       date,
       mealType,
       mealDescription: description,
@@ -41,7 +41,7 @@ export default function LogMeal() {
     router.push("/");
   };
 
-  if (!goat.isLoaded || !goat.isSetupComplete) {
+  if (!mma.isLoaded || !mma.isSetupComplete) {
     return null;
   }
 

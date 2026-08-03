@@ -7,7 +7,7 @@ Este documento explica cómo configurar la autenticación y persistencia de dato
 1. Ve a [supabase.com](https://supabase.com)
 2. Haz clic en "Sign up" (gratis, sin tarjeta de crédito requerida)
 3. Crea una organización y un nuevo proyecto
-   - Name: `goat-mode` (o el que prefieras)
+   - Name: `mma-mode` (o el que prefieras)
    - Database password: Guárdalo en un lugar seguro
    - Region: Elige la más cercana a ti
 4. Espera a que se cree el proyecto (1-2 minutos)

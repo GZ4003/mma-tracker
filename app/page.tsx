@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useGoatMode } from "@/hooks/useGoatMode";
+import { useMmaMode } from "@/hooks/useMmaMode";
 import { Button } from "@/components/ui/button";
 import SetupScreen from "@/components/SetupScreen";
 import FighterProfile from "@/components/FighterProfile";
@@ -15,27 +15,27 @@ import RankOverview from "@/components/RankOverview";
 import PageHeader from "@/components/PageHeader";
 
 export default function Dashboard() {
-  const goat = useGoatMode();
+  const mma = useMmaMode();
 
-  if (!goat.isLoaded) {
+  if (!mma.isLoaded) {
     return (
       <div className="p-4 md:p-6 max-w-4xl mx-auto space-y-4">
-        <div className="bg-goat-surface animate-pulse h-48 rounded-lg" />
+        <div className="bg-mma-surface animate-pulse h-48 rounded-lg" />
         <div className="grid grid-cols-2 gap-4">
-          <div className="bg-goat-surface animate-pulse h-32 rounded-lg" />
-          <div className="bg-goat-surface animate-pulse h-32 rounded-lg" />
+          <div className="bg-mma-surface animate-pulse h-32 rounded-lg" />
+          <div className="bg-mma-surface animate-pulse h-32 rounded-lg" />
         </div>
       </div>
     );
   }
 
-  if (!goat.isSetupComplete) {
-    return <SetupScreen onComplete={goat.completeSetup} />;
+  if (!mma.isSetupComplete) {
+    return <SetupScreen onComplete={mma.completeSetup} />;
   }
 
-  const levelInfo = goat.getLevelInfo();
-  const currentChallenges = goat.getCurrentChallenges();
-  const ranks = goat.getDisciplineRanks();
+  const levelInfo = mma.getLevelInfo();
+  const currentChallenges = mma.getCurrentChallenges();
+  const ranks = mma.getDisciplineRanks();
   const topRank = ranks.length > 0 ? ranks.reduce((top, current) => {
     const rankOrder = ["Hierro", "Bronce", "Plata", "Oro", "Platino", "Esmeralda", "Diamante", "Maestro", "Gran Maestro", "Challenger"];
     return rankOrder.indexOf(current.rank) > rankOrder.indexOf(top.rank) ? current : top;
@@ -46,8 +46,8 @@ export default function Dashboard() {
       <PageHeader title="Panel de Control" subtitle="Tu progreso como luchador" />
 
       {/* Fighter Profile */}
-      {goat.profile && (
-        <FighterProfile profile={goat.profile} levelInfo={levelInfo} topRank={topRank} />
+      {mma.profile && (
+        <FighterProfile profile={mma.profile} levelInfo={levelInfo} topRank={topRank} />
       )}
 
       {/* Quick Actions & Streak */}
@@ -74,10 +74,10 @@ export default function Dashboard() {
           <h3 className="section-title text-lg">
             Progreso
           </h3>
-          {goat.profile && (
+          {mma.profile && (
             <StreakCounter
-              streak={goat.profile.streak}
-              lastTrainingDate={goat.profile.lastTrainingDate}
+              streak={mma.profile.streak}
+              lastTrainingDate={mma.profile.lastTrainingDate}
             />
           )}
         </div>
@@ -100,7 +100,7 @@ export default function Dashboard() {
               <ChallengeCard
                 key={challenge.id}
                 challenge={challenge}
-                onComplete={goat.completeChallenge}
+                onComplete={mma.completeChallenge}
               />
             ))}
           </div>
@@ -108,10 +108,10 @@ export default function Dashboard() {
 
         {/* Recent Achievements & Ranks */}
         <div className="space-y-6">
-          <div className="bg-goat-surface border-goat-muted/30 rounded-lg p-4">
-            <RecentAchievements achievements={goat.achievements} limit={3} />
+          <div className="bg-mma-surface border-mma-muted/30 rounded-lg p-4">
+            <RecentAchievements achievements={mma.achievements} limit={3} />
           </div>
-          <div className="bg-goat-surface border-goat-muted/30 rounded-lg p-4">
+          <div className="bg-mma-surface border-mma-muted/30 rounded-lg p-4">
             <RankOverview ranks={ranks} />
           </div>
         </div>
@@ -119,25 +119,25 @@ export default function Dashboard() {
 
       {/* Recent Activity */}
       <div className="space-y-3">
-        <h2 className="text-lg font-display text-goat-white tracking-wide">
+        <h2 className="text-lg font-display text-mma-white tracking-wide">
           Actividad Reciente
         </h2>
-        <ActivityFeed sessions={goat.sessions} limit={5} />
+        <ActivityFeed sessions={mma.sessions} limit={5} />
       </div>
 
       {/* Level Up Modal */}
-      {goat.levelUpInfo && (
+      {mma.levelUpInfo && (
         <LevelUpModal
-          levelInfo={goat.levelUpInfo}
-          onDismiss={goat.dismissLevelUp}
+          levelInfo={mma.levelUpInfo}
+          onDismiss={mma.dismissLevelUp}
         />
       )}
 
       {/* Achievement Unlocked Modal */}
-      {goat.achievementInfo && (
+      {mma.achievementInfo && (
         <AchievementUnlockedModal
-          achievement={goat.achievementInfo}
-          onDismiss={goat.dismissAchievement || (() => {})}
+          achievement={mma.achievementInfo}
+          onDismiss={mma.dismissAchievement || (() => {})}
         />
       )}
     </div>

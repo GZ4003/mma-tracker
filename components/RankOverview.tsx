@@ -19,7 +19,7 @@ export default function RankOverview({ ranks }: RankOverviewProps) {
 
   return (
     <div className="space-y-3">
-      <h3 className="text-sm font-display text-goat-muted uppercase tracking-wide">
+      <h3 className="text-sm font-display text-mma-muted uppercase tracking-wide">
         Tus Rangos
       </h3>
       <div className="space-y-2">
@@ -37,10 +37,10 @@ export default function RankOverview({ ranks }: RankOverviewProps) {
             >
               <span className="text-xl">{rankInfo.icon}</span>
               <div className="flex-1 min-w-0">
-                <p className="text-xs font-medium text-goat-white capitalize">
+                <p className="text-xs font-medium text-mma-white capitalize">
                   {rank.discipline.replace("_", " ")}
                 </p>
-                <p className="text-xs text-goat-muted">{rank.rank}</p>
+                <p className="text-xs text-mma-muted">{rank.rank}</p>
               </div>
             </div>
           );

@@ -10,7 +10,7 @@ export const LEVELS = [
   { name: "Veteran", minXP: 5500 },
   { name: "Champion", minXP: 8000 },
   { name: "Legend", minXP: 12000 },
-  { name: "Khabib", minXP: 18000 },
+  { name: "GOAT", minXP: 18000 },
 ] as const;
 
 export const XP_BASE = 50;
@@ -41,7 +41,7 @@ export const MEAL_TYPES = [
   { value: "post_entrenamiento", label: "Post-Entrenamiento" },
 ] as const;
 
-export const STORAGE_KEY = "goatmode_data";
+export const STORAGE_KEY = "mmamode_data";
 export const SCHEMA_VERSION = 1;
 
 export const NAVBAR_LINKS = [

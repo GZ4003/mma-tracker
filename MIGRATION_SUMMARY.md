@@ -40,7 +40,7 @@ SETUP_SUPABASE.md        # Instrucciones de configuración
 
 ## Archivos modificados
 
-### `hooks/useGoatMode.ts`
+### `hooks/useMmaMode.ts`
 **Cambios:** 2 funciones (`readFromStorage` y `writeToStorage`)
 - De: localStorage calls
 - A: API fetch calls (`/api/user-data`)
@@ -70,7 +70,7 @@ Middleware → Valida sesión de Supabase → Si no existe, redirige a /login
 
 ### Cuando el usuario registra un entrenamiento
 ```
-useGoatMode → logSession() → setData() → useEffect → writeToStorage()
+useMmaMode → logSession() → setData() → useEffect → writeToStorage()
 ↓
 fetch POST /api/user-data
 ↓
@@ -140,7 +140,7 @@ Ver `SETUP_SUPABASE.md` para instrucciones completas.
 
 Si necesitas volver a localStorage temporalmente:
 
-1. Revert `hooks/useGoatMode.ts` a la versión anterior
+1. Revert `hooks/useMmaMode.ts` a la versión anterior
 2. Elimina los archivos nuevos de Supabase
 3. Desinstala: `npm uninstall @supabase/supabase-js @supabase/ssr`
 

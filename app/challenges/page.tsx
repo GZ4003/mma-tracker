@@ -1,17 +1,17 @@
 "use client";
 
-import { useGoatMode } from "@/hooks/useGoatMode";
+import { useMmaMode } from "@/hooks/useMmaMode";
 import PageHeader from "@/components/PageHeader";
 import ChallengeCard from "@/components/ChallengeCard";
 
 export default function Challenges() {
-  const goat = useGoatMode();
+  const mma = useMmaMode();
 
-  if (!goat.isLoaded || !goat.isSetupComplete) {
+  if (!mma.isLoaded || !mma.isSetupComplete) {
     return null;
   }
 
-  const challenges = goat.getCurrentChallenges();
+  const challenges = mma.getCurrentChallenges();
   const monthName = new Date().toLocaleDateString("es-ES", {
     month: "long",
     year: "numeric",
@@ -26,7 +26,7 @@ export default function Challenges() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {challenges.length === 0 ? (
-          <p className="text-goat-muted col-span-full">
+          <p className="text-mma-muted col-span-full">
             Sin desafíos disponibles. ¡Vuelve más tarde!
           </p>
         ) : (
@@ -34,7 +34,7 @@ export default function Challenges() {
             <ChallengeCard
               key={challenge.id}
               challenge={challenge}
-              onComplete={goat.completeChallenge}
+              onComplete={mma.completeChallenge}
             />
           ))
         )}

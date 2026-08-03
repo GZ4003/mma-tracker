@@ -19,14 +19,14 @@ export default function DisciplineDonutChart({
 
   if (chartData.length === 0) {
     return (
-      <div className="w-full h-64 bg-goat-surface rounded-lg p-4 flex items-center justify-center">
-        <p className="text-goat-muted text-sm">No training data yet</p>
+      <div className="w-full h-64 bg-mma-surface rounded-lg p-4 flex items-center justify-center">
+        <p className="text-mma-muted text-sm">No training data yet</p>
       </div>
     );
   }
 
   return (
-    <div className="w-full h-64 bg-goat-surface rounded-lg p-4">
+    <div className="w-full h-64 bg-mma-surface rounded-lg p-4">
       <ResponsiveContainer width="100%" height="100%">
         <PieChart>
           <Pie

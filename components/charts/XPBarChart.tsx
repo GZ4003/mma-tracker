@@ -24,7 +24,7 @@ export default function XPBarChart({ data }: XPBarChartProps) {
   }));
 
   return (
-    <div className="w-full h-64 bg-goat-surface rounded-lg p-4">
+    <div className="w-full h-64 bg-mma-surface rounded-lg p-4">
       <ResponsiveContainer width="100%" height="100%">
         <BarChart data={abbreviatedData}>
           <CartesianGrid

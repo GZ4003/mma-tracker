@@ -24,17 +24,17 @@ export default function SetupScreen({ onComplete }: SetupScreenProps) {
   const isValid = name.trim().length > 0 && disciplines.length > 0;
 
   return (
-    <div className="fixed inset-0 bg-goat-bg z-50 flex items-center justify-center p-4">
+    <div className="fixed inset-0 bg-mma-bg z-50 flex items-center justify-center p-4">
       <div className="w-full max-w-md space-y-8">
         {/* Header */}
         <div className="text-center space-y-2">
-          <h1 className="text-6xl font-display text-goat-yellow tracking-wider">
+          <h1 className="text-6xl font-display text-mma-yellow tracking-wider">
             MMA
           </h1>
-          <h2 className="text-xl font-display text-goat-white tracking-wide">
+          <h2 className="text-xl font-display text-mma-white tracking-wide">
             MODE
           </h2>
-          <p className="text-goat-muted text-sm mt-4">
+          <p className="text-mma-muted text-sm mt-4">
             Tu Rastreador Personal de Entrenamientos MMA
           </p>
         </div>
@@ -43,7 +43,7 @@ export default function SetupScreen({ onComplete }: SetupScreenProps) {
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Name Input */}
           <div className="space-y-2">
-            <label className="text-sm font-medium text-goat-white">
+            <label className="text-sm font-medium text-mma-white">
               Nombre del Luchador
             </label>
             <Input
@@ -51,14 +51,14 @@ export default function SetupScreen({ onComplete }: SetupScreenProps) {
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Ingresa tu nombre de luchador"
-              className="bg-goat-surface border-goat-muted/30 text-goat-white placeholder:text-goat-muted"
+              className="bg-mma-surface border-mma-muted/30 text-mma-white placeholder:text-mma-muted"
               autoFocus
             />
           </div>
 
           {/* Discipline Selection */}
           <div className="space-y-3">
-            <label className="text-sm font-medium text-goat-white">
+            <label className="text-sm font-medium text-mma-white">
               ¿Qué entrenas?
             </label>
             <DisciplinePicker
@@ -74,8 +74,8 @@ export default function SetupScreen({ onComplete }: SetupScreenProps) {
             disabled={!isValid}
             className={`w-full py-6 font-display text-2xl tracking-widest ${
               isValid
-                ? "bg-goat-yellow text-goat-bg hover:bg-goat-yellow/90"
-                : "bg-goat-muted/20 text-goat-muted cursor-not-allowed"
+                ? "bg-mma-yellow text-mma-bg hover:bg-mma-yellow/90"
+                : "bg-mma-muted/20 text-mma-muted cursor-not-allowed"
             }`}
           >
             ¡VAMOS!
@@ -83,7 +83,7 @@ export default function SetupScreen({ onComplete }: SetupScreenProps) {
         </form>
 
         {/* Footer */}
-        <p className="text-xs text-goat-muted text-center">
+        <p className="text-xs text-mma-muted text-center">
           Todos los datos se almacenan localmente en tu dispositivo
         </p>
       </div>

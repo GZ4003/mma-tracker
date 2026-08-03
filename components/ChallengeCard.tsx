@@ -20,34 +20,34 @@ export default function ChallengeCard({
   const isComplete = challenge.progress >= challenge.target || challenge.completed;
 
   return (
-    <Card className="bg-goat-surface border-goat-muted/30 p-4">
+    <Card className="bg-mma-surface border-mma-muted/30 p-4">
       <div className="space-y-3">
         {/* Header */}
         <div className="flex items-start justify-between">
           <div className="flex-1">
-            <h3 className="font-display text-lg text-goat-yellow tracking-wide">
+            <h3 className="font-display text-lg text-mma-yellow tracking-wide">
               {challenge.title}
             </h3>
-            <p className="text-xs text-goat-muted mt-1">
+            <p className="text-xs text-mma-muted mt-1">
               {challenge.description}
             </p>
           </div>
           {isComplete && (
             <div className="flex items-center gap-2 ml-2">
-              <Check size={20} className="text-goat-yellow" />
+              <Check size={20} className="text-mma-yellow" />
             </div>
           )}
         </div>
 
         {/* Progress Bar */}
         <div className="space-y-2">
-          <div className="flex justify-between items-center text-xs text-goat-muted">
+          <div className="flex justify-between items-center text-xs text-mma-muted">
             <span>{challenge.progress}</span>
             <span>/ {challenge.target} {challenge.unit}</span>
           </div>
           <Progress
             value={progressPercent}
-            className="h-2 bg-goat-bg"
+            className="h-2 bg-mma-bg"
           />
         </div>
 
@@ -55,7 +55,7 @@ export default function ChallengeCard({
         {!challenge.completed && !isComplete && (
           <Button
             onClick={() => onComplete(challenge.id)}
-            className="w-full bg-goat-orange/20 text-goat-orange hover:bg-goat-orange/30 border border-goat-orange/30 text-sm"
+            className="w-full bg-mma-orange/20 text-mma-orange hover:bg-mma-orange/30 border border-mma-orange/30 text-sm"
             variant="default"
           >
             Marcar Completado
@@ -64,9 +64,9 @@ export default function ChallengeCard({
 
         {isComplete && (
           <div className="text-center">
-            <p className="text-xs text-goat-yellow font-medium">✓ COMPLETADO</p>
+            <p className="text-xs text-mma-yellow font-medium">✓ COMPLETADO</p>
             {challenge.completedAt && (
-              <p className="text-xs text-goat-muted mt-1">
+              <p className="text-xs text-mma-muted mt-1">
                 {new Date(challenge.completedAt).toLocaleDateString()}
               </p>
             )}
