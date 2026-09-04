@@ -32,10 +32,12 @@ import {
   RANK_PROGRESSION,
 } from "@/lib/achievements";
 import { showToast } from "@/components/Toast";
+import { createAuditEntry, describeSession } from "@/lib/auditLog";
+import type { AuditEntry } from "@/types";
 
 const LAST_PENALTY_CHECK_KEY = "lastPenaltyCheck";
 const WEEKLY_MIN_SESSIONS = 2;
-const WEEKLY_PENALTY_XP = 100;
+const WEEKLY_PENALTY_XP = 120;
 
 // --- Week helpers (weeks run Monday–Sunday, using local time) ---
 
@@ -84,6 +86,7 @@ const DEFAULT_DATA: MmaModeData = {
   sessions: [],
   challenges: [],
   achievements: [],
+  auditLog: [],
   version: SCHEMA_VERSION,
 };
 
@@ -128,6 +131,9 @@ export function useMmaMode(): UseMmaModeReturn {
         );
         if (!hasCurrentMonth) {
           stored.challenges.push(...generateMonthChallenges(currentMonth));
+        }
+        if (!stored.auditLog) {
+          stored.auditLog = [];
         }
         setData(stored);
       }
@@ -217,6 +223,26 @@ export function useMmaMode(): UseMmaModeReturn {
           setAchievementInfo(newlyUnlockedAchievement);
         }
 
+        const newAuditEntries: AuditEntry[] = [
+          createAuditEntry(
+            "session_logged",
+            `Registraste ${describeSession(newSession)} (+${xpEarned} XP)`,
+            xpEarned,
+            newSession
+          ),
+        ];
+        if (newLevel > oldLevel) {
+          const info = getLevelInfo(newTotalXP);
+          newAuditEntries.push(
+            createAuditEntry(
+              "level_up",
+              `Subiste de nivel: ${info.name}`,
+              0,
+              null
+            )
+          );
+        }
+
         return {
           ...prev,
           profile: {
@@ -230,6 +256,7 @@ export function useMmaMode(): UseMmaModeReturn {
           },
           sessions: [newSession, ...prev.sessions],
           achievements: updatedAchievements,
+          auditLog: [...prev.auditLog, ...newAuditEntries],
         };
       });
 
@@ -257,6 +284,141 @@ export function useMmaMode(): UseMmaModeReturn {
     },
     []
   );
+
+  const editSession = useCallback(
+    (
+      sessionId: string,
+      updates: Pick<
+        Session,
+        "discipline" | "date" | "duration" | "notes" | "techniques" | "energy"
+      >
+    ) => {
+      setData((prev) => {
+        const previousSession = prev.sessions.find((s) => s.id === sessionId);
+        if (!previousSession) return prev;
+
+        const updatedSession: Session = { ...previousSession, ...updates };
+        const auditEntry = createAuditEntry(
+          "session_edited",
+          `Editaste ${describeSession(previousSession)}`,
+          0,
+          previousSession
+        );
+
+        return {
+          ...prev,
+          sessions: prev.sessions.map((s) =>
+            s.id === sessionId ? updatedSession : s
+          ),
+          auditLog: [...prev.auditLog, auditEntry],
+        };
+      });
+    },
+    []
+  );
+
+  const deleteSession = useCallback((sessionId: string) => {
+    setData((prev) => {
+      const session = prev.sessions.find((s) => s.id === sessionId);
+      if (!session) return prev;
+
+      const xpToRemove = session.xpEarned ?? 0;
+      const newTotalXP = Math.max(0, prev.profile.totalXP - xpToRemove);
+      const auditEntry = createAuditEntry(
+        "session_deleted",
+        `Eliminaste ${describeSession(session)} (-${xpToRemove} XP)`,
+        -xpToRemove,
+        session
+      );
+
+      return {
+        ...prev,
+        profile: {
+          ...prev.profile,
+          totalXP: newTotalXP,
+          level: getLevelFromXP(newTotalXP),
+        },
+        sessions: prev.sessions.filter((s) => s.id !== sessionId),
+        auditLog: [...prev.auditLog, auditEntry],
+      };
+    });
+  }, []);
+
+  const restoreSession = useCallback((auditEntryId: string) => {
+    setData((prev) => {
+      const deleteEntry = prev.auditLog.find(
+        (e) => e.id === auditEntryId && e.actionType === "session_deleted"
+      );
+      if (!deleteEntry || !deleteEntry.snapshot) return prev;
+
+      const alreadyRestored = prev.auditLog.some(
+        (e) =>
+          e.actionType === "session_restored" &&
+          e.relatedEntryId === auditEntryId
+      );
+      if (alreadyRestored) return prev;
+
+      const restoredSession = deleteEntry.snapshot;
+      const xpToRestore = restoredSession.xpEarned ?? 0;
+      const newTotalXP = prev.profile.totalXP + xpToRestore;
+      const auditEntry = createAuditEntry(
+        "session_restored",
+        `Restauraste ${describeSession(restoredSession)} (+${xpToRestore} XP)`,
+        xpToRestore,
+        restoredSession,
+        auditEntryId
+      );
+
+      return {
+        ...prev,
+        profile: {
+          ...prev.profile,
+          totalXP: newTotalXP,
+          level: getLevelFromXP(newTotalXP),
+        },
+        sessions: [restoredSession, ...prev.sessions],
+        auditLog: [...prev.auditLog, auditEntry],
+      };
+    });
+  }, []);
+
+  const revertSessionEdit = useCallback((auditEntryId: string) => {
+    setData((prev) => {
+      const editEntry = prev.auditLog.find(
+        (e) => e.id === auditEntryId && e.actionType === "session_edited"
+      );
+      if (!editEntry || !editEntry.snapshot) return prev;
+
+      const alreadyReverted = prev.auditLog.some(
+        (e) =>
+          e.actionType === "session_edited" &&
+          e.relatedEntryId === auditEntryId
+      );
+      if (alreadyReverted) return prev;
+
+      const previousVersion = editEntry.snapshot;
+      const sessionExists = prev.sessions.some(
+        (s) => s.id === previousVersion.id
+      );
+      if (!sessionExists) return prev;
+
+      const auditEntry = createAuditEntry(
+        "session_edited",
+        `Revertiste ${describeSession(previousVersion)} a la versión anterior`,
+        0,
+        previousVersion,
+        auditEntryId
+      );
+
+      return {
+        ...prev,
+        sessions: prev.sessions.map((s) =>
+          s.id === previousVersion.id ? previousVersion : s
+        ),
+        auditLog: [...prev.auditLog, auditEntry],
+      };
+    });
+  }, []);
 
   const completeChallenge = useCallback((challengeId: string) => {
     setData((prev) => ({
@@ -420,6 +582,14 @@ export function useMmaMode(): UseMmaModeReturn {
       const penalty = weeksPenalized * WEEKLY_PENALTY_XP;
       setData((prev) => {
         const newXP = Math.max(0, prev.profile.totalXP - penalty);
+        const auditEntry = createAuditEntry(
+          "penalty_applied",
+          `Penalización semanal por entrenamiento insuficiente (${weeksPenalized} ${
+            weeksPenalized === 1 ? "semana" : "semanas"
+          })`,
+          -penalty,
+          null
+        );
         return {
           ...prev,
           profile: {
@@ -427,9 +597,10 @@ export function useMmaMode(): UseMmaModeReturn {
             totalXP: newXP,
             level: getLevelFromXP(newXP),
           },
+          auditLog: [...prev.auditLog, auditEntry],
         };
       });
-      showToast("You missed training last week. -100 XP");
+      showToast("You missed training last week. -120 XP");
     }
   }, [data.sessions]);
 
@@ -438,6 +609,7 @@ export function useMmaMode(): UseMmaModeReturn {
     sessions: data.sessions,
     challenges: data.challenges,
     achievements: data.achievements,
+    auditLog: data.auditLog,
     isSetupComplete,
     isLoaded,
     levelUpInfo,
@@ -445,6 +617,10 @@ export function useMmaMode(): UseMmaModeReturn {
     completeSetup,
     logSession,
     logMeal,
+    editSession,
+    deleteSession,
+    restoreSession,
+    revertSessionEdit,
     completeChallenge,
     dismissLevelUp,
     dismissAchievement,

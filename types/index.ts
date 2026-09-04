@@ -70,11 +70,34 @@ export interface Achievement {
   unlockedAt?: string;
 }
 
+export type AuditActionType =
+  | "session_logged"
+  | "session_edited"
+  | "session_deleted"
+  | "session_restored"
+  | "penalty_applied"
+  | "xp_adjusted"
+  | "level_up";
+
+export interface AuditEntry {
+  id: string;
+  timestamp: string;
+  actionType: AuditActionType;
+  description: string;
+  xpDelta: number;
+  snapshot: Session | null;
+  // Id of the audit entry this one undoes (a restore points at the delete
+  // it reverses; a revert points at the edit it reverses). Used to hide the
+  // restore/revert action once it has already been used.
+  relatedEntryId?: string;
+}
+
 export interface MmaModeData {
   profile: Profile;
   sessions: Session[];
   challenges: Challenge[];
   achievements: Achievement[];
+  auditLog: AuditEntry[];
   version: number;
 }
 
@@ -112,6 +135,7 @@ export interface UseMmaModeReturn {
   sessions: Session[];
   challenges: Challenge[];
   achievements: Achievement[];
+  auditLog: AuditEntry[];
   isSetupComplete: boolean;
   isLoaded: boolean;
   levelUpInfo: LevelInfo | null;
@@ -124,6 +148,16 @@ export interface UseMmaModeReturn {
   logMeal: (
     data: Pick<Session, "date" | "mealType" | "mealDescription" | "notes">
   ) => void;
+  editSession: (
+    sessionId: string,
+    updates: Pick<
+      Session,
+      "discipline" | "date" | "duration" | "notes" | "techniques" | "energy"
+    >
+  ) => void;
+  deleteSession: (sessionId: string) => void;
+  restoreSession: (auditEntryId: string) => void;
+  revertSessionEdit: (auditEntryId: string) => void;
   completeChallenge: (challengeId: string) => void;
   dismissLevelUp: () => void;
   dismissAchievement?: () => void;

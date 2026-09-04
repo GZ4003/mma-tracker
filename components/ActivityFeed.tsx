@@ -1,6 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Clock, Zap, Utensils } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Clock, Zap, Utensils, Pencil, Trash2 } from "lucide-react";
 import { DISCIPLINES } from "@/lib/constants";
 import type { Session, Discipline } from "@/types";
 
@@ -8,6 +9,8 @@ interface ActivityFeedProps {
   sessions: Session[];
   limit?: number;
   filter?: "all" | "training" | "meal" | Discipline;
+  onEdit?: (session: Session) => void;
+  onDelete?: (session: Session) => void;
 }
 
 function getRelativeTime(dateString: string): string {
@@ -39,6 +42,8 @@ export default function ActivityFeed({
   sessions,
   limit = 5,
   filter = "all",
+  onEdit,
+  onDelete,
 }: ActivityFeedProps) {
   let filtered = sessions;
 
@@ -161,6 +166,36 @@ export default function ActivityFeed({
                   >
                     +{session.techniques.length - 3}
                   </Badge>
+                )}
+              </div>
+            )}
+
+            {/* Edit / Delete */}
+            {session.type === "training" && (onEdit || onDelete) && (
+              <div className="flex gap-2 pt-2">
+                {onEdit && (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => onEdit(session)}
+                    className="flex-1"
+                  >
+                    <Pencil size={14} />
+                    Editar
+                  </Button>
+                )}
+                {onDelete && (
+                  <Button
+                    type="button"
+                    variant="destructive"
+                    size="sm"
+                    onClick={() => onDelete(session)}
+                    className="flex-1"
+                  >
+                    <Trash2 size={14} />
+                    Eliminar
+                  </Button>
                 )}
               </div>
             )}

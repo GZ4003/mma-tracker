@@ -8,8 +8,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import PageHeader from "@/components/PageHeader";
 import ActivityFeed from "@/components/ActivityFeed";
+import AuditLogFeed from "@/components/AuditLogFeed";
+import EditSessionModal from "@/components/EditSessionModal";
+import DeleteSessionDialog from "@/components/DeleteSessionDialog";
 import { DISCIPLINES } from "@/lib/constants";
-import type { Discipline } from "@/types";
+import type { Discipline, Session } from "@/types";
 
 export default function History() {
   const router = useRouter();
@@ -17,6 +20,8 @@ export default function History() {
   const [displayCount, setDisplayCount] = useState(20);
   const [filter, setFilter] = useState<"all" | "training" | "meal" | Discipline>("all");
   const [isAuthed, setIsAuthed] = useState(false);
+  const [editingSession, setEditingSession] = useState<Session | null>(null);
+  const [deletingSession, setDeletingSession] = useState<Session | null>(null);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -45,57 +50,89 @@ export default function History() {
         subtitle={`${mma.sessions.length} entradas totales`}
       />
 
-      {/* Filters - Tabs */}
-      <Tabs
-        value={filter}
-        onValueChange={(v: string) => {
-          setFilter(v as "all" | "training" | "meal" | Discipline);
-          setDisplayCount(20);
-        }}
-        className="w-full flex flex-col"
-      >
-        <TabsList className="grid w-full grid-cols-3 md:grid-cols-5 gap-2 mb-8">
-          <TabsTrigger value="all">
-            Todo
-          </TabsTrigger>
-          <TabsTrigger value="training">
-            Entrenamiento
-          </TabsTrigger>
-          <TabsTrigger value="meal">
-            Comidas
-          </TabsTrigger>
-          {DISCIPLINES.slice(0, 2).map((d) => (
-            <TabsTrigger
-              key={d.value}
-              value={d.value}
-              className="text-xs hidden md:inline-flex"
-            >
-              {d.label.split(" ")[0]}
-            </TabsTrigger>
-          ))}
+      <Tabs defaultValue="sessions" className="w-full flex flex-col">
+        <TabsList className="grid w-full grid-cols-2 mb-6">
+          <TabsTrigger value="sessions">Sesiones</TabsTrigger>
+          <TabsTrigger value="audit">Registro de Actividad</TabsTrigger>
         </TabsList>
 
-        {/* Feed - Below Tabs - Scrollable */}
-        <TabsContent value={filter} className="space-y-3 w-full min-h-0 flex-1 overflow-y-auto">
-          <ActivityFeed
-            sessions={mma.sessions}
-            limit={displayCount}
-            filter={filter}
+        {/* Sessions Tab */}
+        <TabsContent value="sessions" className="space-y-6 w-full">
+          {/* Filters - Tabs */}
+          <Tabs
+            value={filter}
+            onValueChange={(v: string) => {
+              setFilter(v as "all" | "training" | "meal" | Discipline);
+              setDisplayCount(20);
+            }}
+            className="w-full flex flex-col"
+          >
+            <TabsList className="grid w-full grid-cols-3 md:grid-cols-5 gap-2 mb-8">
+              <TabsTrigger value="all">
+                Todo
+              </TabsTrigger>
+              <TabsTrigger value="training">
+                Entrenamiento
+              </TabsTrigger>
+              <TabsTrigger value="meal">
+                Comidas
+              </TabsTrigger>
+              {DISCIPLINES.slice(0, 2).map((d) => (
+                <TabsTrigger
+                  key={d.value}
+                  value={d.value}
+                  className="text-xs hidden md:inline-flex"
+                >
+                  {d.label.split(" ")[0]}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+
+            {/* Feed - Below Tabs - Scrollable */}
+            <TabsContent value={filter} className="space-y-3 w-full min-h-0 flex-1 overflow-y-auto">
+              <ActivityFeed
+                sessions={mma.sessions}
+                limit={displayCount}
+                filter={filter}
+                onEdit={setEditingSession}
+                onDelete={setDeletingSession}
+              />
+            </TabsContent>
+          </Tabs>
+
+          {/* Load More */}
+          {hasMore && (
+            <div className="text-center pt-6">
+              <Button
+                onClick={() => setDisplayCount((prev) => prev + 20)}
+                className="btn-primary"
+              >
+                Cargar Más ({mma.sessions.length - displayCount} restantes)
+              </Button>
+            </div>
+          )}
+        </TabsContent>
+
+        {/* Audit Log Tab */}
+        <TabsContent value="audit" className="space-y-6 w-full">
+          <AuditLogFeed
+            entries={mma.auditLog}
+            onRestore={mma.restoreSession}
+            onRevert={mma.revertSessionEdit}
           />
         </TabsContent>
       </Tabs>
 
-      {/* Load More */}
-      {hasMore && (
-        <div className="text-center pt-6">
-          <Button
-            onClick={() => setDisplayCount((prev) => prev + 20)}
-            className="btn-primary"
-          >
-            Cargar Más ({mma.sessions.length - displayCount} restantes)
-          </Button>
-        </div>
-      )}
+      <EditSessionModal
+        session={editingSession}
+        onClose={() => setEditingSession(null)}
+        onSave={mma.editSession}
+      />
+      <DeleteSessionDialog
+        session={deletingSession}
+        onClose={() => setDeletingSession(null)}
+        onConfirm={mma.deleteSession}
+      />
     </div>
   );
 }

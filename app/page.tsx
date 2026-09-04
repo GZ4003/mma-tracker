@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { useMmaMode } from "@/hooks/useMmaMode";
 import { Button } from "@/components/ui/button";
@@ -13,9 +14,14 @@ import AchievementUnlockedModal from "@/components/AchievementUnlockedModal";
 import RecentAchievements from "@/components/RecentAchievements";
 import RankOverview from "@/components/RankOverview";
 import PageHeader from "@/components/PageHeader";
+import EditSessionModal from "@/components/EditSessionModal";
+import DeleteSessionDialog from "@/components/DeleteSessionDialog";
+import type { Session } from "@/types";
 
 export default function Dashboard() {
   const mma = useMmaMode();
+  const [editingSession, setEditingSession] = useState<Session | null>(null);
+  const [deletingSession, setDeletingSession] = useState<Session | null>(null);
 
   if (!mma.isLoaded) {
     return (
@@ -122,7 +128,12 @@ export default function Dashboard() {
         <h2 className="text-lg font-display text-mma-white tracking-wide">
           Actividad Reciente
         </h2>
-        <ActivityFeed sessions={mma.sessions} limit={5} />
+        <ActivityFeed
+          sessions={mma.sessions}
+          limit={5}
+          onEdit={setEditingSession}
+          onDelete={setDeletingSession}
+        />
       </div>
 
       {/* Level Up Modal */}
@@ -140,6 +151,17 @@ export default function Dashboard() {
           onDismiss={mma.dismissAchievement || (() => {})}
         />
       )}
+
+      <EditSessionModal
+        session={editingSession}
+        onClose={() => setEditingSession(null)}
+        onSave={mma.editSession}
+      />
+      <DeleteSessionDialog
+        session={deletingSession}
+        onClose={() => setDeletingSession(null)}
+        onConfirm={mma.deleteSession}
+      />
     </div>
   );
 }
