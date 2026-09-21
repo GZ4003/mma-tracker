@@ -12,7 +12,7 @@ import ChallengeCard from "@/components/ChallengeCard";
 import LevelUpModal from "@/components/LevelUpModal";
 import AchievementUnlockedModal from "@/components/AchievementUnlockedModal";
 import RecentAchievements from "@/components/RecentAchievements";
-import RankOverview from "@/components/RankOverview";
+import MasteryOverview from "@/components/MasteryOverview";
 import PageHeader from "@/components/PageHeader";
 import EditSessionModal from "@/components/EditSessionModal";
 import DeleteSessionDialog from "@/components/DeleteSessionDialog";
@@ -41,11 +41,7 @@ export default function Dashboard() {
 
   const levelInfo = mma.getLevelInfo();
   const currentChallenges = mma.getCurrentChallenges();
-  const ranks = mma.getDisciplineRanks();
-  const topRank = ranks.length > 0 ? ranks.reduce((top, current) => {
-    const rankOrder = ["Hierro", "Bronce", "Plata", "Oro", "Platino", "Esmeralda", "Diamante", "Maestro", "Gran Maestro", "Challenger"];
-    return rankOrder.indexOf(current.rank) > rankOrder.indexOf(top.rank) ? current : top;
-  }).rank : undefined;
+  const masteries = mma.getMasteries();
 
   return (
     <div className="p-4 md:p-6 max-w-4xl mx-auto space-y-6">
@@ -53,7 +49,7 @@ export default function Dashboard() {
 
       {/* Fighter Profile */}
       {mma.profile && (
-        <FighterProfile profile={mma.profile} levelInfo={levelInfo} topRank={topRank} />
+        <FighterProfile profile={mma.profile} levelInfo={levelInfo} />
       )}
 
       {/* Quick Actions & Streak */}
@@ -89,9 +85,9 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Ranks Overview */}
+      {/* Masteries Overview */}
       <div className="bg-card border border-border rounded-lg p-4">
-        <RankOverview ranks={ranks} />
+        <MasteryOverview masteries={masteries} />
       </div>
 
       {/* Active Challenges & Recent Achievements */}
@@ -118,7 +114,7 @@ export default function Dashboard() {
             <RecentAchievements achievements={mma.achievements} limit={3} />
           </div>
           <div className="bg-mma-surface border-mma-muted/30 rounded-lg p-4">
-            <RankOverview ranks={ranks} />
+            <MasteryOverview masteries={masteries} />
           </div>
         </div>
       </div>

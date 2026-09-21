@@ -1,19 +1,16 @@
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import XPBar from "./XPBar";
-import RankBadge from "./RankBadge";
 import type { Profile, LevelInfo } from "@/types";
 
 interface FighterProfileProps {
   profile: Profile;
   levelInfo: LevelInfo;
-  topRank?: string;
 }
 
 export default function FighterProfile({
   profile,
   levelInfo,
-  topRank,
 }: FighterProfileProps): JSX.Element {
   return (
     <Card className="bg-mma-surface border-mma-muted/30 p-6">
@@ -32,9 +29,6 @@ export default function FighterProfile({
             >
               {levelInfo.name}
             </Badge>
-            {topRank && (
-              <RankBadge rank={topRank as import("@/lib/achievements").Rank} size="sm" />
-            )}
           </div>
         </div>
 
