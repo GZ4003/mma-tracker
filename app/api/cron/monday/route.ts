@@ -10,8 +10,8 @@ const MESSAGE =
   "Tenés 5 días para registrar al menos 2 clases y mantener tu racha. Cada sesión suma XP y te acerca al próximo rango.";
 
 // GET /api/cron/monday - Triggered by the Vercel Cron Job defined in
-// vercel.json (Mondays at 23:00 UTC / 8pm Argentina time). Sends every user
-// a personalized kickoff email for the new week.
+// vercel.json (Mondays at 23:15 UTC / 8:15pm Argentina time). Sends every
+// user a personalized kickoff email for the new week.
 export async function GET(request: NextRequest) {
   if (!isAuthorizedCronRequest(request)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
