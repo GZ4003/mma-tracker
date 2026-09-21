@@ -49,7 +49,6 @@ const WEEKLY_MIN_SESSIONS = 2;
 const WEEKLY_PENALTY_XP = 120;
 const XP_PATCH_V2_KEY = "xpPatch_v2";
 const XP_PATCH_V3_KEY = "xpPatch_v3";
-const MASTERY_MIGRATION_KEY = "masteryMigration_v1";
 
 function bumpMastery(
   masteries: Record<Discipline, Mastery>,
@@ -155,35 +154,45 @@ export function useMmaMode(): UseMmaModeReturn {
           window.localStorage.setItem(XP_PATCH_V3_KEY, "done");
         }
 
-        // One-time migration: backfill profile.masteries from session
-        // history for profiles created before the masteries system existed.
-        if (
-          typeof window !== "undefined" &&
-          !window.localStorage.getItem(MASTERY_MIGRATION_KEY)
-        ) {
-          if (!stored.profile.masteries) {
-            const masteries = createDefaultMasteries();
-            stored.sessions
-              .filter((s) => s.type === "training" && s.discipline)
-              .forEach((s) => {
-                const discipline = s.discipline as Discipline;
-                masteries[discipline] = {
-                  sessions: masteries[discipline].sessions + 1,
-                  level: 1,
-                };
-              });
-            (Object.keys(masteries) as Discipline[]).forEach((discipline) => {
-              masteries[discipline].level = getMasteryLevel(
-                masteries[discipline].sessions
-              );
-            });
-            stored.profile.masteries = masteries;
-          }
-          window.localStorage.setItem(MASTERY_MIGRATION_KEY, "done");
-        }
+        // Migration/self-heal: (re)compute profile.masteries from session
+        // history whenever it's missing, or whenever its total session
+        // count has drifted from the real session history. The drift check
+        // matters because useMmaMode has no shared state — every page
+        // mounts its own instance, does its own fetch, and does its own
+        // write-back. Two instances loading close together (e.g. quick
+        // navigation between pages) can race: one computes masteries
+        // correctly, the other's fetch lands before that write completes,
+        // sees masteries still missing, and — if gated only on presence —
+        // would fall back to all-zero and persist that, clobbering the
+        // correct value. Checking against the real count instead makes
+        // this self-correcting and safe to run on every load.
+        const realTrainingSessionCount = stored.sessions.filter(
+          (s) => s.type === "training" && s.discipline
+        ).length;
+        const masteriesSessionCount = stored.profile.masteries
+          ? Object.values(stored.profile.masteries).reduce(
+              (sum, m) => sum + m.sessions,
+              0
+            )
+          : -1;
 
-        if (!stored.profile.masteries) {
-          stored.profile.masteries = createDefaultMasteries();
+        if (masteriesSessionCount !== realTrainingSessionCount) {
+          const masteries = createDefaultMasteries();
+          stored.sessions
+            .filter((s) => s.type === "training" && s.discipline)
+            .forEach((s) => {
+              const discipline = s.discipline as Discipline;
+              masteries[discipline] = {
+                sessions: masteries[discipline].sessions + 1,
+                level: 1,
+              };
+            });
+          (Object.keys(masteries) as Discipline[]).forEach((discipline) => {
+            masteries[discipline].level = getMasteryLevel(
+              masteries[discipline].sessions
+            );
+          });
+          stored.profile.masteries = masteries;
         }
 
         setData(stored);
