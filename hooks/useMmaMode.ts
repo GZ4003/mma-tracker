@@ -16,7 +16,7 @@ import {
 import { STORAGE_KEY, SCHEMA_VERSION, DISCIPLINES } from "@/lib/constants";
 import {
   calculateSessionXP,
-  getLevelFromXP,
+  recalculateLevel,
   getLevelInfo,
   calculateStreak,
 } from "@/lib/xp";
@@ -33,45 +33,14 @@ import {
 } from "@/lib/achievements";
 import { showToast } from "@/components/Toast";
 import { createAuditEntry, describeSession } from "@/lib/auditLog";
+import { getWeekStart, addDays, toISODate, parseLocalDate } from "@/lib/weekUtils";
 import type { AuditEntry } from "@/types";
 
 const LAST_PENALTY_CHECK_KEY = "lastPenaltyCheck";
 const WEEKLY_MIN_SESSIONS = 2;
 const WEEKLY_PENALTY_XP = 120;
-
-// --- Week helpers (weeks run Monday–Sunday, using local time) ---
-
-function startOfDay(d: Date): Date {
-  return new Date(d.getFullYear(), d.getMonth(), d.getDate());
-}
-
-// Monday (at local midnight) of the week containing `d`.
-function getWeekStart(d: Date): Date {
-  const s = startOfDay(d);
-  const day = s.getDay(); // 0 = Sunday ... 6 = Saturday
-  const diff = day === 0 ? -6 : 1 - day;
-  s.setDate(s.getDate() + diff);
-  return s;
-}
-
-function addDays(d: Date, n: number): Date {
-  const c = new Date(d);
-  c.setDate(c.getDate() + n);
-  return c;
-}
-
-function toISODate(d: Date): string {
-  const y = d.getFullYear();
-  const m = String(d.getMonth() + 1).padStart(2, "0");
-  const day = String(d.getDate()).padStart(2, "0");
-  return `${y}-${m}-${day}`;
-}
-
-// Parse a "YYYY-MM-DD" string as a LOCAL date (avoids UTC off-by-one at midnight).
-function parseLocalDate(s: string): Date {
-  const [y, m, day] = s.split("-").map(Number);
-  return new Date(y, (m ?? 1) - 1, day ?? 1);
-}
+const XP_PATCH_V2_KEY = "xpPatch_v2";
+const XP_PATCH_V3_KEY = "xpPatch_v3";
 
 const DEFAULT_DATA: MmaModeData = {
   profile: {
@@ -135,6 +104,28 @@ export function useMmaMode(): UseMmaModeReturn {
         if (!stored.auditLog) {
           stored.auditLog = [];
         }
+
+        // One-time patch: correct a bad totalXP value that had drifted from
+        // the real session history. Runs once, guarded in localStorage.
+        if (
+          typeof window !== "undefined" &&
+          !window.localStorage.getItem(XP_PATCH_V2_KEY)
+        ) {
+          stored.profile.totalXP = 1634;
+          stored.profile.level = recalculateLevel(stored.profile.totalXP);
+          window.localStorage.setItem(XP_PATCH_V2_KEY, "done");
+        }
+
+        // One-time patch: existing profiles may have a level computed under
+        // the old rank thresholds. Recompute once against the new table.
+        if (
+          typeof window !== "undefined" &&
+          !window.localStorage.getItem(XP_PATCH_V3_KEY)
+        ) {
+          stored.profile.level = recalculateLevel(stored.profile.totalXP);
+          window.localStorage.setItem(XP_PATCH_V3_KEY, "done");
+        }
+
         setData(stored);
       }
       setIsLoaded(true);
@@ -147,6 +138,22 @@ export function useMmaMode(): UseMmaModeReturn {
       writeToStorage(data);
     }
   }, [data, isLoaded]);
+
+  // Keep the server-readable weekly summary (used by the cron email check)
+  // in sync whenever training sessions are logged, deleted, or restored.
+  useEffect(() => {
+    if (!isLoaded) return;
+    const trainingDates = data.sessions
+      .filter((s) => s.type === "training")
+      .map((s) => s.date);
+    fetch("/api/weekly-summary", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ trainingDates }),
+    }).catch(() => {
+      console.error("Failed to sync weekly summary");
+    });
+  }, [data.sessions, isLoaded]);
 
   const isSetupComplete = Boolean(data.profile.name);
 
@@ -189,7 +196,7 @@ export function useMmaMode(): UseMmaModeReturn {
       const xpEarned = calculateSessionXP(sessionData.duration ?? 0, newStreak);
       const newTotalXP = data.profile.totalXP + xpEarned;
       const oldLevel = data.profile.level;
-      const newLevel = getLevelFromXP(newTotalXP);
+      const newLevel = recalculateLevel(newTotalXP);
 
       const newSession: Session = {
         ...sessionData,
@@ -336,7 +343,7 @@ export function useMmaMode(): UseMmaModeReturn {
         profile: {
           ...prev.profile,
           totalXP: newTotalXP,
-          level: getLevelFromXP(newTotalXP),
+          level: recalculateLevel(newTotalXP),
         },
         sessions: prev.sessions.filter((s) => s.id !== sessionId),
         auditLog: [...prev.auditLog, auditEntry],
@@ -374,7 +381,7 @@ export function useMmaMode(): UseMmaModeReturn {
         profile: {
           ...prev.profile,
           totalXP: newTotalXP,
-          level: getLevelFromXP(newTotalXP),
+          level: recalculateLevel(newTotalXP),
         },
         sessions: [restoredSession, ...prev.sessions],
         auditLog: [...prev.auditLog, auditEntry],
@@ -595,12 +602,12 @@ export function useMmaMode(): UseMmaModeReturn {
           profile: {
             ...prev.profile,
             totalXP: newXP,
-            level: getLevelFromXP(newXP),
+            level: recalculateLevel(newXP),
           },
           auditLog: [...prev.auditLog, auditEntry],
         };
       });
-      showToast("You missed training last week. -120 XP");
+      showToast("Missed weekly minimum. -120 XP");
     }
   }, [data.sessions]);
 

@@ -1,18 +1,5 @@
 import type { Discipline } from "@/types";
 
-export const LEVELS = [
-  { name: "Rookie", minXP: 0 },
-  { name: "Amateur", minXP: 200 },
-  { name: "Competitor", minXP: 500 },
-  { name: "Contender", minXP: 1000 },
-  { name: "Elite", minXP: 2000 },
-  { name: "Warrior", minXP: 3500 },
-  { name: "Veteran", minXP: 5500 },
-  { name: "Champion", minXP: 8000 },
-  { name: "Legend", minXP: 12000 },
-  { name: "GOAT", minXP: 18000 },
-] as const;
-
 export const XP_BASE = 50;
 export const XP_STREAK_BONUS = 10;
 export const XP_STREAK_MAX_BONUS = 50;

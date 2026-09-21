@@ -51,7 +51,7 @@ export default function FighterProfile({
           <div>
             <p className="text-xs text-mma-muted">NIVEL</p>
             <p className="text-2xl font-display text-mma-yellow">
-              {profile.level + 1}
+              {profile.level}
             </p>
           </div>
           <div>
