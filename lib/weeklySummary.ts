@@ -2,14 +2,20 @@ import { promises as fs } from "fs";
 import path from "path";
 
 // Server can't read the client's localStorage, so the client pushes a small
-// summary of its training session dates here whenever sessions change. The
-// weekly-check cron reads it back to decide whether to send a reminder email.
+// per-user summary of training session dates here whenever sessions change.
+// The weekly-check cron reads it back to decide, per user, whether to email
+// a reminder to that user's own address.
 const DATA_DIR = path.join(process.cwd(), "data");
 const SUMMARY_PATH = path.join(DATA_DIR, "weekly-summary.json");
 
-export interface WeeklySummary {
+export interface UserWeeklyData {
+  email: string;
   trainingDates: string[];
   updatedAt: string;
+}
+
+export interface WeeklySummary {
+  users: Record<string, UserWeeklyData>;
 }
 
 export async function readWeeklySummary(): Promise<WeeklySummary> {
@@ -17,13 +23,19 @@ export async function readWeeklySummary(): Promise<WeeklySummary> {
     const raw = await fs.readFile(SUMMARY_PATH, "utf-8");
     return JSON.parse(raw) as WeeklySummary;
   } catch {
-    return { trainingDates: [], updatedAt: new Date(0).toISOString() };
+    return { users: {} };
   }
 }
 
-export async function writeWeeklySummary(trainingDates: string[]): Promise<void> {
+export async function writeUserWeeklyData(
+  userId: string,
+  email: string,
+  trainingDates: string[]
+): Promise<void> {
   await fs.mkdir(DATA_DIR, { recursive: true });
-  const summary: WeeklySummary = {
+  const summary = await readWeeklySummary();
+  summary.users[userId] = {
+    email,
     trainingDates,
     updatedAt: new Date().toISOString(),
   };

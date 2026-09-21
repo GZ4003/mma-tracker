@@ -1,12 +1,13 @@
 import { createClient } from "@/lib/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
-import { writeWeeklySummary } from "@/lib/weeklySummary";
+import { writeUserWeeklyData } from "@/lib/weeklySummary";
 
 export const runtime = "nodejs";
 
 // POST /api/weekly-summary - Called by the client whenever training sessions
-// change, so the server has a record of them to check on the weekly cron
-// (the client's localStorage isn't reachable from the server).
+// change, so the server has a record of them (keyed by user, with that
+// user's own email) to check on the weekly cron. The client's localStorage
+// isn't reachable from the server.
 export async function POST(request: NextRequest) {
   try {
     const supabase = createClient();
@@ -25,7 +26,7 @@ export async function POST(request: NextRequest) {
       ? body.trainingDates.filter((d: unknown) => typeof d === "string")
       : [];
 
-    await writeWeeklySummary(trainingDates);
+    await writeUserWeeklyData(user.id, user.email ?? "", trainingDates);
 
     return NextResponse.json({ success: true });
   } catch (error) {

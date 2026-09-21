@@ -22,6 +22,10 @@ export const metadata: Metadata = {
   title: "MMA Mode",
   description: "Rastreador Personal de Entrenamientos MMA",
   viewport: "width=device-width, initial-scale=1, viewport-fit=cover",
+  icons: {
+    icon: "/logo.svg",
+    apple: "/logo.svg",
+  },
 };
 
 export default function RootLayout({
