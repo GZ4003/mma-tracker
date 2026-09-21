@@ -9,7 +9,7 @@ const MESSAGE =
   "Arrancó la semana. Tenés 5 días para registrar al menos 2 clases y mantener tu racha. Cada sesión suma XP y te acerca al próximo rango. ¿Arrancamos?";
 
 // GET /api/cron/monday - Triggered by the Vercel Cron Job defined in
-// vercel.json (Mondays at 22:00 UTC / 7pm Argentina time). Sends every user
+// vercel.json (Mondays at 23:00 UTC / 8pm Argentina time). Sends every user
 // a motivational kickoff email for the new week.
 export async function GET(request: NextRequest) {
   if (!isAuthorizedCronRequest(request)) {
