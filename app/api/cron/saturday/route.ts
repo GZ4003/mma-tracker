@@ -9,7 +9,7 @@ export const runtime = "nodejs";
 const SATURDAY_MIN_SESSIONS = 2;
 
 const MESSAGE =
-  "Mañana termina la semana y todavía no completaste el mínimo de 2 clases. Es tu última oportunidad antes de perder 120 XP. ¿Entrenamos hoy?";
+  "Mañana termina la semana y todavía no completaste el mínimo de 2 clases. Es tu última oportunidad antes de perder 120 XP.";
 
 // GET /api/cron/saturday - Triggered by the Vercel Cron Job defined in
 // vercel.json (Saturdays at 22:00 UTC / 7pm Argentina time). Last-chance
@@ -47,7 +47,15 @@ export async function GET(request: NextRequest) {
         to: user.email,
         subject: "🚨 Última oportunidad — MMA Mode",
         text: MESSAGE,
-        html: buildEmailHtml({ message: MESSAGE }),
+        html: buildEmailHtml({
+          name: user.name,
+          heading: "Última oportunidad 🚨",
+          message: MESSAGE,
+          stats: [
+            { label: "Clases (L-S)", value: `${sessionCount}/${SATURDAY_MIN_SESSIONS}` },
+            { label: "En juego", value: "-120 XP" },
+          ],
+        }),
       });
 
       results.push({ userId: user.userId, sessionCount, emailSent: true });

@@ -1,53 +1,80 @@
-import fs from "fs";
-import path from "path";
+export interface EmailStat {
+  label: string;
+  value: string;
+}
 
-// Inlined as a base64 data URI so the logo renders inside the email body
-// without depending on external hosting.
-const LOGO_DATA_URI = `data:image/svg+xml;base64,${fs
-  .readFileSync(path.join(process.cwd(), "public", "email-avatar.svg"))
-  .toString("base64")}`;
-
-// Shared base template for all cron emails (Monday/Wednesday/Saturday).
+// Shared base template for all cron emails (Monday/Wednesday/Saturday/Sunday).
 // Kept as plain, table-based HTML with inline styles since Gmail, Outlook
-// and Apple Mail all strip <style> blocks and external fonts.
+// and Apple Mail all strip <style> blocks, external fonts and often start
+// with images blocked — hence the text wordmark instead of a logo image.
+// Colors match the app's own palette (mma-bg/mma-surface/blue) instead of
+// an unrelated one-off scheme, so the brand feels the same in-app and in
+// email. Stats are per-user (name, sessions, XP, streak, etc.) rather than
+// a single fixed message for everyone.
 export function buildEmailHtml({
+  name,
+  heading,
   message,
+  stats = [],
   ctaText = "Abrir MMA Mode",
 }: {
+  name: string;
+  heading: string;
   message: string;
+  stats?: EmailStat[];
   ctaText?: string;
 }): string {
   const appUrl = process.env.APP_URL || "#";
 
+  const statsHtml =
+    stats.length === 0
+      ? ""
+      : `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:22px;">
+          <tr>
+            ${stats
+              .map(
+                (stat, index) => `
+            ${index > 0 ? '<td width="10"></td>' : ""}
+            <td align="center" style="background:#0A0A0F; border:1px solid #23232E; border-radius:10px; padding:14px 6px;">
+              <div style="color:#3B82F6; font-family:Arial, sans-serif; font-size:20px; font-weight:800; line-height:1.2;">${stat.value}</div>
+              <div style="color:#6B7280; font-family:Arial, sans-serif; font-size:10px; text-transform:uppercase; letter-spacing:0.5px; margin-top:4px;">${stat.label}</div>
+            </td>`
+              )
+              .join("")}
+          </tr>
+        </table>`;
+
   return `<!DOCTYPE html>
 <html lang="es">
-  <body style="margin:0; padding:0; background:#080C14;">
-    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#080C14; padding:32px 16px;">
+  <body style="margin:0; padding:0; background:#0A0A0F;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#0A0A0F; padding:32px 16px;">
       <tr>
         <td align="center">
-          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:600px; font-family: 'Arial Black', Arial, sans-serif;">
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:520px;">
             <tr>
-              <td align="center" style="padding-bottom:12px;">
-                <img src="${LOGO_DATA_URI}" width="80" height="80" alt="MMA Mode" style="display:block; border-radius:50%;" />
+              <td align="center" style="padding-bottom:28px;">
+                <span style="font-family:'Arial Black', Impact, Arial, sans-serif; font-size:26px; font-weight:900; letter-spacing:4px; color:#3B82F6;">MMA MODE</span>
               </td>
             </tr>
             <tr>
-              <td align="center" style="padding-bottom:20px;">
-                <span style="color:#00B4FF; font-weight:bold; font-size:20px; letter-spacing:2px;">MMA MODE</span>
-              </td>
-            </tr>
-            <tr>
-              <td style="border-top:2px solid #0066FF; padding-bottom:24px; font-size:0; line-height:0;">&nbsp;</td>
-            </tr>
-            <tr>
-              <td style="background:#0D1525; border-radius:12px; padding:28px 24px;">
-                <p style="margin:0 0 24px; color:#E8F4FF; font-family: Arial, sans-serif; font-size:16px; line-height:1.6;">
+              <td style="background:#12121A; border:1px solid #23232E; border-radius:16px; padding:32px 28px;">
+                <p style="margin:0 0 6px; color:#6B7280; font-family:Arial, sans-serif; font-size:12px; text-transform:uppercase; letter-spacing:1px;">
+                  Hola, ${name}
+                </p>
+                <h1 style="margin:0 0 20px; color:#F5F5F5; font-family:Arial, sans-serif; font-size:21px; font-weight:800; line-height:1.35;">
+                  ${heading}
+                </h1>
+
+                ${statsHtml}
+
+                <p style="margin:0 0 24px; color:#D1D5DB; font-family:Arial, sans-serif; font-size:15px; line-height:1.6;">
                   ${message}
                 </p>
-                <table role="presentation" cellpadding="0" cellspacing="0" align="center">
+
+                <table role="presentation" cellpadding="0" cellspacing="0">
                   <tr>
-                    <td style="background:#0066FF; border-radius:8px;">
-                      <a href="${appUrl}" style="display:inline-block; padding:12px 28px; color:#E8F4FF; font-family: Arial, sans-serif; font-size:15px; font-weight:bold; text-decoration:none;">${ctaText}</a>
+                    <td style="background:#2563EB; border-radius:8px;">
+                      <a href="${appUrl}" style="display:inline-block; padding:13px 28px; color:#FFFFFF; font-family:Arial, sans-serif; font-size:14px; font-weight:bold; text-decoration:none;">${ctaText}</a>
                     </td>
                   </tr>
                 </table>
@@ -55,7 +82,7 @@ export function buildEmailHtml({
             </tr>
             <tr>
               <td align="center" style="padding-top:20px;">
-                <span style="color:#6a95c4; font-family: Arial, sans-serif; font-size:12px;">MMA Mode — Personal Fight Tracker</span>
+                <span style="color:#6B7280; font-family:Arial, sans-serif; font-size:11px;">MMA Mode — Personal Fight Tracker</span>
               </td>
             </tr>
           </table>

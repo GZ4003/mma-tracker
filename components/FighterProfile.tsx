@@ -1,16 +1,19 @@
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import XPBar from "./XPBar";
-import type { Profile, LevelInfo } from "@/types";
+import MasteryBadge from "./MasteryBadge";
+import type { Profile, LevelInfo, MasteryInfo } from "@/types";
 
 interface FighterProfileProps {
   profile: Profile;
   levelInfo: LevelInfo;
+  topMastery?: MasteryInfo;
 }
 
 export default function FighterProfile({
   profile,
   levelInfo,
+  topMastery,
 }: FighterProfileProps): JSX.Element {
   return (
     <Card className="bg-mma-surface border-mma-muted/30 p-6">
@@ -29,6 +32,7 @@ export default function FighterProfile({
             >
               {levelInfo.name}
             </Badge>
+            {topMastery && <MasteryBadge mastery={topMastery} size="sm" />}
           </div>
         </div>
 

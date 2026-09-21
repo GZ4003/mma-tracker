@@ -4,8 +4,10 @@ import type { MmaModeData, Session } from "@/types";
 export interface CronUser {
   userId: string;
   email: string;
+  name: string;
   trainingSessions: Session[];
   totalXP: number;
+  streak: number;
 }
 
 // Reads every user's training sessions, XP and email server-side, for the
@@ -42,8 +44,10 @@ export async function fetchCronUsers(): Promise<CronUser[]> {
     result.push({
       userId: row.user_id,
       email,
+      name: parsed?.profile?.name || "Fighter",
       trainingSessions: (parsed?.sessions ?? []).filter((s) => s.type === "training"),
       totalXP: parsed?.profile?.totalXP ?? 0,
+      streak: parsed?.profile?.streak ?? 0,
     });
   }
 

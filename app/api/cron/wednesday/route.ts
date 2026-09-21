@@ -9,13 +9,13 @@ export const runtime = "nodejs";
 
 const WEDNESDAY_MIN_SESSIONS = 2;
 
-const congratsMessage = (rank: string, nextRank: string | null) =>
-  `Ya cumpliste el mínimo semanal. Pero si querés sumar más XP y acercarte a ${
-    nextRank ? `${rank} → ${nextRank}` : rank
-  }, seguí entrenando. Cada clase cuenta.`;
+const congratsMessage = (nextRank: string | null) =>
+  nextRank
+    ? `Ya cumpliste el mínimo semanal. Seguí entrenando para acercarte a ${nextRank}.`
+    : "Ya cumpliste el mínimo semanal. Seguí entrenando, cada clase suma.";
 
 const WARNING_MESSAGE =
-  "Llegamos al miércoles y todavía no completaste 2 clases esta semana. Tenés hasta el sábado para evitar la penalización de -120 XP. Una sola clase más alcanza.";
+  "Llegamos al miércoles y todavía no completaste 2 clases esta semana. Tenés hasta el sábado para evitar la penalización de -120 XP.";
 
 // GET /api/cron/wednesday - Triggered by the Vercel Cron Job defined in
 // vercel.json (Wednesdays at 22:00 UTC / 7pm Argentina time). Checks each
@@ -44,7 +44,7 @@ export async function GET(request: NextRequest) {
       const metMinimum = sessionCount >= WEDNESDAY_MIN_SESSIONS;
       const { name: rank, nextLevelName } = getLevelInfo(user.totalXP);
 
-      const message = metMinimum ? congratsMessage(rank, nextLevelName) : WARNING_MESSAGE;
+      const message = metMinimum ? congratsMessage(nextLevelName) : WARNING_MESSAGE;
       const subject = metMinimum
         ? "🔥 Ya cumpliste — MMA Mode"
         : "⚠️ Te falta una clase esta semana — MMA Mode";
@@ -54,7 +54,15 @@ export async function GET(request: NextRequest) {
         to: user.email,
         subject,
         text: message,
-        html: buildEmailHtml({ message }),
+        html: buildEmailHtml({
+          name: user.name,
+          heading: metMinimum ? "Ya cumpliste el mínimo 🔥" : "Te falta una clase ⚠️",
+          message,
+          stats: [
+            { label: "Clases (L-M)", value: `${sessionCount}/${WEDNESDAY_MIN_SESSIONS}` },
+            { label: "Rango", value: rank },
+          ],
+        }),
       });
 
       results.push({ userId: user.userId, sessionCount, metMinimum, emailSent: true });

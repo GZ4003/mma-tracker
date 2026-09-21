@@ -42,6 +42,9 @@ export default function Dashboard() {
   const levelInfo = mma.getLevelInfo();
   const currentChallenges = mma.getCurrentChallenges();
   const masteries = mma.getMasteries();
+  const topMastery = [...masteries]
+    .filter((m) => m.unlocked)
+    .sort((a, b) => b.level - a.level || b.sessions - a.sessions)[0];
 
   return (
     <div className="p-4 md:p-6 max-w-4xl mx-auto space-y-6">
@@ -49,7 +52,7 @@ export default function Dashboard() {
 
       {/* Fighter Profile */}
       {mma.profile && (
-        <FighterProfile profile={mma.profile} levelInfo={levelInfo} />
+        <FighterProfile profile={mma.profile} levelInfo={levelInfo} topMastery={topMastery} />
       )}
 
       {/* Quick Actions & Streak */}
