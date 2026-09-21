@@ -70,6 +70,23 @@ export function getLevelInfo(totalXP: number): LevelInfo {
   };
 }
 
+// Session-count thresholds for masteries.sessions -> masteries.level, per
+// discipline. Index 0 is level 1's threshold, index 9 is level 10's.
+export const MASTERY_LEVEL_THRESHOLDS = [
+  0, 10, 25, 50, 85, 130, 185, 250, 325, 420,
+];
+
+export function getMasteryLevel(sessions: number): number {
+  let level = 1;
+  for (let i = MASTERY_LEVEL_THRESHOLDS.length - 1; i >= 0; i--) {
+    if (sessions >= MASTERY_LEVEL_THRESHOLDS[i]) {
+      level = i + 1;
+      break;
+    }
+  }
+  return level;
+}
+
 export function calculateStreak(
   lastTrainingDate: string | null,
   todayDate: string

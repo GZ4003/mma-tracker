@@ -3,7 +3,8 @@
 import { useMmaMode } from "@/hooks/useMmaMode";
 import PageHeader from "@/components/PageHeader";
 import AchievementsPanel from "@/components/AchievementsPanel";
-import DisciplineRanks from "@/components/DisciplineRanks";
+import GlobalRankCard from "@/components/GlobalRankCard";
+import MasteriesSection from "@/components/MasteriesSection";
 import RankProgression from "@/components/RankProgression";
 
 export default function Achievements() {
@@ -15,6 +16,8 @@ export default function Achievements() {
 
   const achievements = mma.getAchievements();
   const ranks = mma.getDisciplineRanks();
+  const levelInfo = mma.getLevelInfo();
+  const masteries = mma.getMasteries();
 
   return (
     <div className="p-4 md:p-6 max-w-6xl mx-auto space-y-8">
@@ -23,8 +26,13 @@ export default function Achievements() {
         subtitle="Desbloquea equipo y sube de rango en cada disciplina"
       />
 
-      {/* Rankings by Discipline */}
-      <DisciplineRanks ranks={ranks} />
+      {/* Rango Global */}
+      {mma.profile && (
+        <GlobalRankCard totalXP={mma.profile.totalXP} levelInfo={levelInfo} />
+      )}
+
+      {/* Maestrías por disciplina */}
+      <MasteriesSection masteries={masteries} />
 
       {/* Rank Progression Guide & Achievements */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

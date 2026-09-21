@@ -19,6 +19,7 @@ import {
   recalculateLevel,
   getLevelInfo,
   calculateStreak,
+  getMasteryLevel,
 } from "@/lib/xp";
 import {
   generateMonthChallenges,
@@ -31,6 +32,13 @@ import {
   getNextRankInfo,
   RANK_PROGRESSION,
 } from "@/lib/achievements";
+import {
+  createDefaultMasteries,
+  getMasteryTitle,
+  getMasteryProgress,
+  MASTERY_COLORS,
+} from "@/lib/masteries";
+import type { Mastery, MasteryInfo } from "@/types";
 import { showToast } from "@/components/Toast";
 import { createAuditEntry, describeSession } from "@/lib/auditLog";
 import { getWeekStart, addDays, toISODate, parseLocalDate } from "@/lib/weekUtils";
@@ -41,6 +49,26 @@ const WEEKLY_MIN_SESSIONS = 2;
 const WEEKLY_PENALTY_XP = 120;
 const XP_PATCH_V2_KEY = "xpPatch_v2";
 const XP_PATCH_V3_KEY = "xpPatch_v3";
+const MASTERY_MIGRATION_KEY = "masteryMigration_v1";
+
+function bumpMastery(
+  masteries: Record<Discipline, Mastery>,
+  discipline: Discipline | undefined,
+  delta: number
+): Record<Discipline, Mastery> {
+  if (!discipline) return masteries;
+
+  const current = masteries[discipline] ?? { sessions: 0, level: 1 };
+  const sessions = Math.max(0, current.sessions + delta);
+
+  return {
+    ...masteries,
+    [discipline]: {
+      sessions,
+      level: getMasteryLevel(sessions),
+    },
+  };
+}
 
 const DEFAULT_DATA: MmaModeData = {
   profile: {
@@ -51,6 +79,7 @@ const DEFAULT_DATA: MmaModeData = {
     lastTrainingDate: null,
     disciplines: [],
     joinedAt: new Date().toISOString(),
+    masteries: createDefaultMasteries(),
   },
   sessions: [],
   challenges: [],
@@ -124,6 +153,37 @@ export function useMmaMode(): UseMmaModeReturn {
         ) {
           stored.profile.level = recalculateLevel(stored.profile.totalXP);
           window.localStorage.setItem(XP_PATCH_V3_KEY, "done");
+        }
+
+        // One-time migration: backfill profile.masteries from session
+        // history for profiles created before the masteries system existed.
+        if (
+          typeof window !== "undefined" &&
+          !window.localStorage.getItem(MASTERY_MIGRATION_KEY)
+        ) {
+          if (!stored.profile.masteries) {
+            const masteries = createDefaultMasteries();
+            stored.sessions
+              .filter((s) => s.type === "training" && s.discipline)
+              .forEach((s) => {
+                const discipline = s.discipline as Discipline;
+                masteries[discipline] = {
+                  sessions: masteries[discipline].sessions + 1,
+                  level: 1,
+                };
+              });
+            (Object.keys(masteries) as Discipline[]).forEach((discipline) => {
+              masteries[discipline].level = getMasteryLevel(
+                masteries[discipline].sessions
+              );
+            });
+            stored.profile.masteries = masteries;
+          }
+          window.localStorage.setItem(MASTERY_MIGRATION_KEY, "done");
+        }
+
+        if (!stored.profile.masteries) {
+          stored.profile.masteries = createDefaultMasteries();
         }
 
         setData(stored);
@@ -244,6 +304,11 @@ export function useMmaMode(): UseMmaModeReturn {
             lastTrainingDate: streakResult.isNewDay
               ? today
               : prev.profile.lastTrainingDate,
+            masteries: bumpMastery(
+              prev.profile.masteries,
+              sessionData.discipline,
+              1
+            ),
           },
           sessions: [newSession, ...prev.sessions],
           achievements: updatedAchievements,
@@ -296,8 +361,21 @@ export function useMmaMode(): UseMmaModeReturn {
           previousSession
         );
 
+        let masteries = prev.profile.masteries;
+        if (
+          previousSession.type === "training" &&
+          previousSession.discipline !== updatedSession.discipline
+        ) {
+          masteries = bumpMastery(masteries, previousSession.discipline, -1);
+          masteries = bumpMastery(masteries, updatedSession.discipline, 1);
+        }
+
         return {
           ...prev,
+          profile: {
+            ...prev.profile,
+            masteries,
+          },
           sessions: prev.sessions.map((s) =>
             s.id === sessionId ? updatedSession : s
           ),
@@ -328,6 +406,10 @@ export function useMmaMode(): UseMmaModeReturn {
           ...prev.profile,
           totalXP: newTotalXP,
           level: recalculateLevel(newTotalXP),
+          masteries:
+            session.type === "training"
+              ? bumpMastery(prev.profile.masteries, session.discipline, -1)
+              : prev.profile.masteries,
         },
         sessions: prev.sessions.filter((s) => s.id !== sessionId),
         auditLog: [...prev.auditLog, auditEntry],
@@ -366,6 +448,10 @@ export function useMmaMode(): UseMmaModeReturn {
           ...prev.profile,
           totalXP: newTotalXP,
           level: recalculateLevel(newTotalXP),
+          masteries:
+            restoredSession.type === "training"
+              ? bumpMastery(prev.profile.masteries, restoredSession.discipline, 1)
+              : prev.profile.masteries,
         },
         sessions: [restoredSession, ...prev.sessions],
         auditLog: [...prev.auditLog, auditEntry],
@@ -401,8 +487,24 @@ export function useMmaMode(): UseMmaModeReturn {
         auditEntryId
       );
 
+      const currentSession = prev.sessions.find(
+        (s) => s.id === previousVersion.id
+      )!;
+      let masteries = prev.profile.masteries;
+      if (
+        previousVersion.type === "training" &&
+        currentSession.discipline !== previousVersion.discipline
+      ) {
+        masteries = bumpMastery(masteries, currentSession.discipline, -1);
+        masteries = bumpMastery(masteries, previousVersion.discipline, 1);
+      }
+
       return {
         ...prev,
+        profile: {
+          ...prev.profile,
+          masteries,
+        },
         sessions: prev.sessions.map((s) =>
           s.id === previousVersion.id ? previousVersion : s
         ),
@@ -528,6 +630,27 @@ export function useMmaMode(): UseMmaModeReturn {
     return data.achievements;
   }, [data.achievements]);
 
+  const getMasteries = useCallback((): MasteryInfo[] => {
+    return DISCIPLINES.map(({ value: discipline }) => {
+      const mastery = data.profile.masteries[discipline];
+      const { sessionsToNextLevel, progressPercent } = getMasteryProgress(
+        mastery.sessions,
+        mastery.level
+      );
+
+      return {
+        discipline,
+        sessions: mastery.sessions,
+        level: mastery.level,
+        title: getMasteryTitle(discipline, mastery.level),
+        color: MASTERY_COLORS[discipline],
+        sessionsToNextLevel,
+        progressPercent,
+        unlocked: mastery.sessions > 0,
+      };
+    });
+  }, [data.profile.masteries]);
+
   // Deduct XP for each fully-passed week in which fewer than 2 training
   // sessions were logged. Runs once per app open (see PenaltyChecker).
   const checkWeeklyPenalty = useCallback(() => {
@@ -620,6 +743,7 @@ export function useMmaMode(): UseMmaModeReturn {
     getCurrentChallenges,
     getDisciplineRanks,
     getAchievements,
+    getMasteries,
     checkWeeklyPenalty,
   };
 }

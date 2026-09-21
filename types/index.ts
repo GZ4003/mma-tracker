@@ -49,6 +49,11 @@ export interface Challenge {
   progress?: number;
 }
 
+export interface Mastery {
+  sessions: number;
+  level: number;
+}
+
 export interface Profile {
   name: string;
   totalXP: number;
@@ -57,6 +62,18 @@ export interface Profile {
   lastTrainingDate: string | null;
   disciplines: Discipline[];
   joinedAt: string;
+  masteries: Record<Discipline, Mastery>;
+}
+
+export interface MasteryInfo {
+  discipline: Discipline;
+  sessions: number;
+  level: number;
+  title: string;
+  color: string;
+  sessionsToNextLevel: number | null;
+  progressPercent: number;
+  unlocked: boolean;
 }
 
 export interface Achievement {
@@ -167,5 +184,6 @@ export interface UseMmaModeReturn {
   getCurrentChallenges: () => Array<Challenge & { progress: number }>;
   getDisciplineRanks: () => DisciplineRank[];
   getAchievements: () => Achievement[];
+  getMasteries: () => MasteryInfo[];
   checkWeeklyPenalty: () => void;
 }
