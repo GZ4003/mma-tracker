@@ -1,6 +1,6 @@
 // Week helpers (weeks run Monday–Sunday, using local time). Shared between
-// the client hook and the server-side weekly-check route so both agree on
-// week boundaries.
+// the client hook and the server-side cron routes so both agree on week
+// boundaries.
 
 export function startOfDay(d: Date): Date {
   return new Date(d.getFullYear(), d.getMonth(), d.getDate());

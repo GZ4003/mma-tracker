@@ -139,22 +139,6 @@ export function useMmaMode(): UseMmaModeReturn {
     }
   }, [data, isLoaded]);
 
-  // Keep the server-readable weekly summary (used by the cron email check)
-  // in sync whenever training sessions are logged, deleted, or restored.
-  useEffect(() => {
-    if (!isLoaded) return;
-    const trainingDates = data.sessions
-      .filter((s) => s.type === "training")
-      .map((s) => s.date);
-    fetch("/api/weekly-summary", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ trainingDates }),
-    }).catch(() => {
-      console.error("Failed to sync weekly summary");
-    });
-  }, [data.sessions, isLoaded]);
-
   const isSetupComplete = Boolean(data.profile.name);
 
   const completeSetup = useCallback(
