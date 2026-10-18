@@ -49,6 +49,7 @@ const WEEKLY_MIN_SESSIONS = 2;
 const WEEKLY_PENALTY_XP = 120;
 const XP_PATCH_V2_KEY = "xpPatch_v2";
 const XP_PATCH_V3_KEY = "xpPatch_v3";
+const XP_PATCH_V4_KEY = "xpPatch_v4";
 
 function bumpMastery(
   masteries: Record<Discipline, Mastery>,
@@ -152,6 +153,27 @@ export function useMmaMode(): UseMmaModeReturn {
         ) {
           stored.profile.level = recalculateLevel(stored.profile.totalXP);
           window.localStorage.setItem(XP_PATCH_V3_KEY, "done");
+        }
+
+        // One-time patch: manual +120 XP correction. Runs once, guarded in
+        // localStorage.
+        if (
+          typeof window !== "undefined" &&
+          !window.localStorage.getItem(XP_PATCH_V4_KEY)
+        ) {
+          const xpDelta = 120;
+          stored.profile.totalXP += xpDelta;
+          stored.profile.level = recalculateLevel(stored.profile.totalXP);
+          stored.auditLog = [
+            ...stored.auditLog,
+            createAuditEntry(
+              "xp_adjusted",
+              "Manual XP adjustment +120 XP",
+              xpDelta,
+              null
+            ),
+          ];
+          window.localStorage.setItem(XP_PATCH_V4_KEY, "done");
         }
 
         // Migration/self-heal: (re)compute profile.masteries from session
