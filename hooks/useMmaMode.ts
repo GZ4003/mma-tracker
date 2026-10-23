@@ -41,7 +41,7 @@ import {
 import type { Mastery, MasteryInfo } from "@/types";
 import { showToast } from "@/components/Toast";
 import { createAuditEntry, describeSession } from "@/lib/auditLog";
-import { getWeekStart, addDays, toISODate, parseLocalDate } from "@/lib/weekUtils";
+import { getWeekStart, addDays, toISODate, parseLocalDate, appToday } from "@/lib/weekUtils";
 import type { AuditEntry } from "@/types";
 
 const LAST_PENALTY_CHECK_KEY = "lastPenaltyCheck";
@@ -574,12 +574,12 @@ export function useMmaMode(): UseMmaModeReturn {
   const getProgress = useCallback((): ProgressStats => {
     const trainingSessions = data.sessions.filter((s) => s.type === "training");
 
-    const today = new Date();
+    const today = appToday();
     const xpByDay: Array<{ date: string; xp: number }> = [];
     for (let i = 29; i >= 0; i--) {
       const d = new Date(today);
       d.setDate(d.getDate() - i);
-      const dateStr = d.toISOString().split("T")[0];
+      const dateStr = toISODate(d);
       const dayXP = trainingSessions
         .filter((s) => s.date === dateStr)
         .reduce((sum, s) => sum + (s.xpEarned ?? 0), 0);
@@ -696,7 +696,7 @@ export function useMmaMode(): UseMmaModeReturn {
       return;
     }
 
-    const currentWeekStart = getWeekStart(now);
+    const currentWeekStart = getWeekStart(appToday());
     const trainingSessions = data.sessions.filter((s) => s.type === "training");
 
     // Evaluate every fully-passed week from the week of the last check up to

@@ -10,12 +10,13 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import PageHeader from "@/components/PageHeader";
 import { MEAL_TYPES } from "@/lib/constants";
 import type { MealType } from "@/types";
+import { toISODate } from "@/lib/weekUtils";
 
 export default function LogMeal() {
   const router = useRouter();
   const mma = useMmaMode();
 
-  const today = new Date().toISOString().split("T")[0];
+  const today = toISODate(new Date());
   const [date, setDate] = useState(today);
   const [mealType, setMealType] = useState<MealType>("breakfast");
   const [description, setDescription] = useState("");

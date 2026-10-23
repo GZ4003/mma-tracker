@@ -1,4 +1,5 @@
 import { Flame } from "lucide-react";
+import { toISODate } from "@/lib/weekUtils";
 
 interface StreakCounterProps {
   streak: number;
@@ -9,13 +10,11 @@ export default function StreakCounter({
   streak,
   lastTrainingDate,
 }: StreakCounterProps) {
-  const today = new Date().toISOString().split("T")[0];
+  const today = toISODate(new Date());
+  const yesterday = toISODate(new Date(Date.now() - 86400000));
   const isActive =
     lastTrainingDate === today ||
-    (lastTrainingDate
-      ? new Date(lastTrainingDate).toISOString().split("T")[0] ===
-        new Date(new Date().getTime() - 86400000).toISOString().split("T")[0]
-      : false);
+    (lastTrainingDate ? lastTrainingDate === yesterday : false);
 
   return (
     <div

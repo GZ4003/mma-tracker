@@ -12,12 +12,13 @@ import { Badge } from "@/components/ui/badge";
 import PageHeader from "@/components/PageHeader";
 import DisciplinePicker from "@/components/DisciplinePicker";
 import type { Discipline } from "@/types";
+import { toISODate } from "@/lib/weekUtils";
 
 export default function LogTraining() {
   const router = useRouter();
   const mma = useMmaMode();
 
-  const today = new Date().toISOString().split("T")[0];
+  const today = toISODate(new Date());
   const [date, setDate] = useState(today);
   const [discipline, setDiscipline] = useState<Discipline[]>([]);
   const [duration, setDuration] = useState("");

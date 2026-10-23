@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { fetchCronUsers } from "@/lib/userProfiles";
-import { getWeekStart, addDays, parseLocalDate } from "@/lib/weekUtils";
+import { getWeekStart, addDays, parseLocalDate, appToday } from "@/lib/weekUtils";
 import { isAuthorizedCronRequest, createMailTransporter } from "@/lib/cronMail";
 import { buildEmailHtml } from "@/lib/emailTemplate";
 import { getLevelInfo } from "@/lib/xp";
@@ -28,8 +28,7 @@ export async function GET(request: NextRequest) {
   try {
     const users = await fetchCronUsers();
 
-    const now = new Date();
-    const weekStart = getWeekStart(now);
+    const weekStart = getWeekStart(appToday());
     const wedEnd = addDays(weekStart, 3); // exclusive upper bound (Thursday) — covers Mon–Wed
 
     const transporter = createMailTransporter();
